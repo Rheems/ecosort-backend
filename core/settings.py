@@ -25,8 +25,7 @@ SECRET_KEY = 'django-insecure-7lp$molql&o5spg_0zn=f&l$6_l*d=!&2v(2fctok6mn)6$@eq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ecosort-backend.onrender.com',
- 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
