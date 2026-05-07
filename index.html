@@ -743,9 +743,147 @@ footer a:hover { color: var(--muted); }
       </div>
     </div>
 
-    <!-- UPDATE PROFILE -->
+    
+<!-- UPDATE PROFILE -->
     <div class="endpoint-card" id="profile-put">
       <div class="endpoint-card-header" onclick="toggle(this)">
         <span class="method-pill pill-put">PUT</span>
         <div class="endpoint-info">
-          <div
+          <div class="endpoint-title">Update My Profile</div>
+          <div class="endpoint-path">/api/profile/me/</div>
+          <div class="endpoint-plain">Allows the logged-in user to update their profile details — change their location, switch their preferred language, update their waste type or channel. Like editing your profile settings on WhatsApp or Instagram.</div>
+        </div>
+        <span class="auth-tag">🔒 Token Required</span>
+        <span class="chevron">›</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="auth-note">🔒 Add this to your request headers: <strong>Authorization: Token YOUR_TOKEN_HERE</strong></div>
+        <div class="code-label">Request Body (JSON)</div>
+        <div class="code-block">{
+  "fullName": "Amina Yusuf",
+  "location": "Surulere, Lagos",
+  "languagePreference": "english",
+  "channel": "whatsapp",
+  "wasteType": "organic"
+}</div>
+        <div class="response-row">
+          <div class="code-label">Response</div>
+          <span class="status-pill">200 OK</span>
+        </div>
+        <div class="response-block">{
+  "message": "Profile updated!"
+}</div>
+      </div>
+    </div>
+
+    <!-- ONBOARDING SECTION -->
+    <div class="section-title">🎯 Onboarding</div>
+    <p class="section-subtitle">Every new user goes through a 5-step onboarding journey before using Ecosort fully. These endpoints track their progress and reward them when they complete all 5 steps.</p>
+
+    <!-- ONBOARDING STATUS -->
+    <div class="endpoint-card" id="onboarding-status">
+      <div class="endpoint-card-header" onclick="toggle(this)">
+        <span class="method-pill pill-get">GET</span>
+        <div class="endpoint-info">
+          <div class="endpoint-title">Check Onboarding Progress</div>
+          <div class="endpoint-path">/api/onboarding/status/</div>
+          <div class="endpoint-plain">Shows exactly where a user is in their onboarding journey — which of the 5 steps they've completed and which ones are still pending. Think of it like checking your progress bar when setting up a new phone.</div>
+        </div>
+        <span class="auth-tag">🔒 Token Required</span>
+        <span class="chevron">›</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="auth-note">🔒 Add this to your request headers: <strong>Authorization: Token YOUR_TOKEN_HERE</strong></div>
+        <div class="response-row">
+          <div class="code-label">Response</div>
+          <span class="status-pill">200 OK</span>
+        </div>
+        <div class="response-block">{
+  "currentStep": 3,
+  "step1Completed": true,
+  "step2Completed": true,
+  "step3Completed": false,
+  "step4Completed": false,
+  "step5Completed": false,
+  "isCompleted": false,
+  "startedAt": "2026-04-25T10:00:00Z",
+  "completedAt": null
+}</div>
+      </div>
+    </div>
+
+    <!-- ONBOARDING COMPLETE -->
+    <div class="endpoint-card" id="onboarding-complete">
+      <div class="endpoint-card-header" onclick="toggle(this)">
+        <span class="method-pill pill-post">POST</span>
+        <div class="endpoint-info">
+          <div class="endpoint-title">Complete an Onboarding Step</div>
+          <div class="endpoint-path">/api/onboarding/complete/</div>
+          <div class="endpoint-plain">Called each time a user finishes one of the 5 onboarding steps. When they complete step 5 — the final step — the system marks their onboarding as done and automatically queues their first reward notification. This reward is Ecosort's way of saying "Welcome, you're ready to sort waste and earn!"</div>
+        </div>
+        <span class="auth-tag">🔒 Token Required</span>
+        <span class="chevron">›</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="auth-note">🔒 Add this to your request headers: <strong>Authorization: Token YOUR_TOKEN_HERE</strong></div>
+        <div class="code-label">Request Body (JSON)</div>
+        <div class="code-block">{
+  "step": 1
+}</div>
+        <div class="response-row">
+          <div class="code-label">Response (Steps 1–4)</div>
+          <span class="status-pill">200 OK</span>
+        </div>
+        <div class="response-block" style="margin-bottom:16px">{
+  "message": "Step 1 completed!",
+  "nextStep": 2
+}</div>
+        <div class="response-row">
+          <div class="code-label">Response (Step 5 — Final)</div>
+          <span class="status-pill">200 OK</span>
+        </div>
+        <div class="response-block">{
+  "message": "Onboarding complete! First reward notification queued."
+}</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  Built with Django REST Framework &nbsp;·&nbsp;
+  <a href="https://github.com/Rheems/ecosort-backend" target="_blank">View on GitHub →</a>
+  <br><br>Team 3 Eco-Sorters · Hackathon 2026
+</footer>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+function toggle(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  body.classList.toggle('open');
+  chevron.style.transform = body.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0)';
+}
+
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' });
+    const body = el.querySelector('.endpoint-body');
+    const chevron = el.querySelector('.chevron');
+    if (body && !body.classList.contains('open')) {
+      body.classList.add('open');
+      chevron.style.transform = 'rotate(90deg)';
+    }
+  }
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+</script>
+
+</body>
+</html>
