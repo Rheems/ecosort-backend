@@ -548,7 +548,7 @@ footer a:hover { color: var(--muted); }
     <div class="hero">
       <h1>Welcome to <span>Ecosort</span> API Docs 🌿</h1>
       <p class="hero-desc">
-        This is the backend engine powering Ecosort Nigeria's community-powered waste sorting and marketplace platform. Every feature you see in the app runs through these endpoints. Built with Django REST Framework by Team 3 Eco-Sorters.
+        This is the backend engine powering Ecosort Nigeria's community-powered waste sorting. Every feature you see in the app runs through these endpoints. Built with Django REST Framework by Team 3 Backend Eco-Sorters.
       </p>
       <div class="base-url-box">
         <span class="base-url-label">Base URL</span>
@@ -582,7 +582,7 @@ footer a:hover { color: var(--muted); }
 
     <!-- AUTH SECTION -->
     <div class="section-title">🔐 Authentication</div>
-    <p class="section-subtitle">These endpoints handle how users create accounts and log in. No token is needed here — these are the starting points for every user journey on Ecosort.</p>
+    <p class="section-subtitle">These endpoints handle how users create accounts and log in. No token is needed here these are the starting points for every user journey on Ecosort.</p>
 
     <!-- REGISTER -->
     <div class="endpoint-card" id="register">
@@ -591,7 +591,7 @@ footer a:hover { color: var(--muted); }
         <div class="endpoint-info">
           <div class="endpoint-title">Register a New User</div>
           <div class="endpoint-path">/api/auth/register/</div>
-          <div class="endpoint-plain">Think of this like filling a form to join Ecosort for the first time. The user provides their name, phone number, location and what type of user they are — household, collector, buyer or brand. Once done, their account is created and onboarding begins automatically.</div>
+          <div class="endpoint-plain">The user provides their name, phone number, location and what type of user they are household, collector, buyer or brand. Once done, their account is created and onboarding begins automatically.</div>
         </div>
         <span class="no-auth-tag">Public</span>
         <span class="chevron">›</span>
@@ -627,7 +627,7 @@ footer a:hover { color: var(--muted); }
         <div class="endpoint-info">
           <div class="endpoint-title">Login with Phone Number</div>
           <div class="endpoint-path">/api/auth/login/</div>
-          <div class="endpoint-plain">This is the gate into Ecosort. A user enters their phone number and password. If correct, they receive a token — like a key — that lets them access their profile, onboarding and other protected parts of the platform.</div>
+          <div class="endpoint-plain">This is the gate into Ecosort. A user enters their phone number and password. If correct, they receive a token like a key that lets them access their profile, onboarding and other protected parts of the platform.</div>
         </div>
         <span class="no-auth-tag">Public</span>
         <span class="chevron">›</span>
@@ -658,7 +658,7 @@ footer a:hover { color: var(--muted); }
         <div class="endpoint-info">
           <div class="endpoint-title">Request OTP</div>
           <div class="endpoint-path">/api/auth/request-otp/</div>
-          <div class="endpoint-plain">For users who find passwords difficult — especially elderly users or those not tech-savvy — this endpoint generates a 4-digit one-time code tied to their phone number. Think of it like the code your bank sends you via SMS. In production, this code will be delivered via SMS through Termii. It expires after 10 minutes.</div>
+          <div class="endpoint-plain">For users who find passwords difficult, especially elderly users or those not tech-savvy, this endpoint generates a 4-digit one-time code tied to their phone number. Think of it like the code your bank sends you via SMS. In production, this code will be delivered via SMS through Termii. It expires after 10 minutes.</div>
         </div>
         <span class="no-auth-tag">Public</span>
         <span class="chevron">›</span>
@@ -687,7 +687,7 @@ footer a:hover { color: var(--muted); }
         <div class="endpoint-info">
           <div class="endpoint-title">Verify OTP</div>
           <div class="endpoint-path">/api/auth/verify-otp/</div>
-          <div class="endpoint-plain">After receiving their 4-digit OTP code, the user enters it here to confirm their identity. If the code is correct and hasn't expired, they are logged in and receive their access token — no password needed at all.</div>
+          <div class="endpoint-plain">After receiving their 4-digit OTP code, the user enters it here to confirm their identity. If the code is correct and hasn't expired, they are logged in and receive their access token,no password needed at all.</div>
         </div>
         <span class="no-auth-tag">Public</span>
         <span class="chevron">›</span>
@@ -713,7 +713,7 @@ footer a:hover { color: var(--muted); }
 
     <!-- PROFILE SECTION -->
     <div class="section-title">👤 User Profile</div>
-    <p class="section-subtitle">These endpoints let users view and update their personal information stored on Ecosort. A valid token from login is required — the system needs to know whose profile to show or update.</p>
+    <p class="section-subtitle">These endpoints let users view and update their personal information stored on Ecosort. A valid token from login is required,the system needs to know whose profile to show or update.</p>
 
     <!-- GET PROFILE -->
     <div class="endpoint-card" id="profile-get">
@@ -722,7 +722,7 @@ footer a:hover { color: var(--muted); }
         <div class="endpoint-info">
           <div class="endpoint-title">Get My Profile</div>
           <div class="endpoint-path">/api/profile/me/</div>
-          <div class="endpoint-plain">Fetches all the profile details of the currently logged-in user — their name, location, preferred language, what channel they use (WhatsApp, USSD or App) and their waste type. Like opening your profile page on any app.</div>
+          <div class="endpoint-plain">Fetches all the profile details of the currently logged-in user,their name, location, preferred language, what channel they use (WhatsApp, USSD or App) and their waste type. Like opening your profile page on any app.</div>
         </div>
         <span class="auth-tag">🔒 Token Required</span>
         <span class="chevron">›</span>
@@ -750,7 +750,7 @@ footer a:hover { color: var(--muted); }
         <div class="endpoint-info">
           <div class="endpoint-title">Update My Profile</div>
           <div class="endpoint-path">/api/profile/me/</div>
-          <div class="endpoint-plain">Allows the logged-in user to update their profile details — change their location, switch their preferred language, update their waste type or channel. Like editing your profile settings on WhatsApp or Instagram.</div>
+          <div class="endpoint-plain">Allows the logged-in user to update their profile details, change their location, switch their preferred language, update their waste type or channel. Like editing your profile settings on WhatsApp or Instagram.</div>
         </div>
         <span class="auth-tag">🔒 Token Required</span>
         <span class="chevron">›</span>
@@ -786,7 +786,7 @@ footer a:hover { color: var(--muted); }
         <div class="endpoint-info">
           <div class="endpoint-title">Check Onboarding Progress</div>
           <div class="endpoint-path">/api/onboarding/status/</div>
-          <div class="endpoint-plain">Shows exactly where a user is in their onboarding journey — which of the 5 steps they've completed and which ones are still pending. Think of it like checking your progress bar when setting up a new phone.</div>
+          <div class="endpoint-plain">Shows exactly where a user is in their onboarding journey which of the 5 steps they've completed and which ones are still pending. Think of it like checking your progress bar when setting up a new phone.</div>
         </div>
         <span class="auth-tag">🔒 Token Required</span>
         <span class="chevron">›</span>
