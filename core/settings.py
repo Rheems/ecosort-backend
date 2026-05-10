@@ -27,6 +27,8 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['ecosort-backend.onrender.com', 
                  'ecosort-backend-1-sd1e.onrender.com',
+                 'ecosort-backend-0fta.onrender.com',
+                 '*.onrender.com'
                    '127.0.0.1', 'localhost']
 
 
