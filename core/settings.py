@@ -25,7 +25,7 @@ SECRET_KEY =os.environ.get('SECRET_KEY',  'django-insecure-7lp$molql&o5spg_0zn=f
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 
-ALLOWED_HOSTS = ['ecosort-backend.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['ecosort-backend.onrender.com', 'ecosort-backend-1-sdle.onrender.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
