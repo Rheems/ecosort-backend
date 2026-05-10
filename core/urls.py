@@ -1,13 +1,36 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.http import HttpResponse
+from django.http import JsonResponse
 
-# A simple view to show something on the home page
-def home_view(request):
-    return HttpResponse("<h1>Ecosort API is Live</h1><p>Go to <a href='/api/'>/api/</a> to see the endpoints.</p>")
+def homepage(request):
+    return JsonResponse({
+        "message": "Welcome to Ecosort API 🌿",
+        "version": "v2.0",
+        "team": "Team 3 Eco-Sorters",
+        "status": "Live",
+        "docs": "https://rheems.github.io/ecosort-backend/",
+        "github": "https://github.com/Rheems/ecosort-backend",
+        "API documentation": "https://ecosort-backend-01ta.onrender.com"
+        "endpoints": {
+            "authentication": {
+                "register": "POST /api/auth/register/",
+                "login": "POST /api/auth/login/",
+                "request_otp": "POST /api/auth/request-otp/",
+                "verify_otp": "POST /api/auth/verify-otp/",
+            },
+            "profile": {
+                "get_profile": "GET /api/profile/me/",
+                "update_profile": "PUT /api/profile/me/",
+            },
+            "onboarding": {
+                "status": "GET /api/onboarding/status/",
+                "complete_step": "POST /api/onboarding/complete/",
+            }
+        }
+    })
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
-    path('', home_view), # This fixes the 404 on the main link!
+    path('', homepage, name='home'),
 ]
