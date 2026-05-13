@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 def homepage(request):
     return JsonResponse({
@@ -10,7 +11,8 @@ def homepage(request):
         "status": "Live",
         "docs": "https://rheems.github.io/ecosort-backend/",
         "github": "https://github.com/Rheems/ecosort-backend",
-        "API documentation": "https://ecosort-backend-01ta.onrender.com"
+        "interactive_docs": "/api/docs/",
+        "redoc": "/api/redoc/",
         "endpoints": {
             "authentication": {
                 "register": "POST /api/auth/register/",
@@ -32,5 +34,8 @@ def homepage(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('', homepage, name='home'),
 ]

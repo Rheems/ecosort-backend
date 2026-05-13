@@ -1,85 +1,111 @@
-# Ecosort Backend API
+# 🌿 Ecosort Backend API
 
-Backend infrastructure for Ecosort — Nigeria's community-powered waste sorting and marketplace platform.
+Backend infrastructure for Ecosort — Nigeria's first community-powered
+waste sorting and marketplace platform.
 
-## Tech Stack
+Built by **Team 3 Eco-Sorters** | Hackathon 2026
+
+## 🚀 Live API
+
+Base URL: https://ecosort-backend-01ta.onrender.com
+
+API Documentation: https://rheems.github.io/ecosort-backend/
+
+## 🛠️ Tech Stack
 
 - Python 3.11
 - Django 5.2
 - Django REST Framework
-- SQLite (development)
+- Token Authentication
+- CamelCase Middleware
 - PostgreSQL (production)
+- SQLite (development)
+- Render (deployment)
 
-## Features
+---
 
-- User registration for all user types (Household, Collector, Buyer, Brand)
+## ✨ Features
+
+- User registration for 4 user types (Household, Collector, Buyer, Brand)
+- Phone number + password login
+- OTP login for non-tech-savvy users (expires in 10 minutes)
 - User profile storage and management
-- Onboarding session tracking
-- Onboarding completion trigger with automatic reward notification queuing
+- 5-step onboarding session tracking
+- Automatic reward notification queuing on onboarding completion
+- camelCase API responses for frontend compatibility
 
-## Setup Instructions
+---
 
-### 1. Clone the repository
+## 📡 API Endpoints
 
-git clone <your-github-repo-url>
-cd ecosort-backend
+### Authentication
 
-### 2. Create and activate virtual environment
+| Method | Endpoint               | Description                 | Auth |
+| ------ | ---------------------- | --------------------------- | ---- |
+| POST   | /api/auth/register/    | Register a new user         | No   |
+| POST   | /api/auth/login/       | Login with phone + password | No   |
+| POST   | /api/auth/request-otp/ | Request 4-digit OTP         | No   |
+| POST   | /api/auth/verify-otp/  | Verify OTP and get token    | No   |
 
-python -m venv venv
-venv\Scripts\activate # Windows
-source venv/bin/activate # Mac/Linux
+### User Profile
 
-### 3. Install dependencies
+| Method | Endpoint         | Description                 | Auth |
+| ------ | ---------------- | --------------------------- | ---- |
+| GET    | /api/profile/me/ | Get current user profile    | Yes  |
+| PUT    | /api/profile/me/ | Update current user profile | Yes  |
 
-pip install -r requirements.txt
+### Onboarding
 
-### 4. Run migrations
+| Method | Endpoint                  | Description                      | Auth |
+| ------ | ------------------------- | -------------------------------- | ---- |
+| GET    | /api/onboarding/status/   | Check onboarding progress        | Yes  |
+| POST   | /api/onboarding/complete/ | Complete a step + trigger reward | Yes  |
 
-python manage.py migrate
+---
 
-### 5. Start the server
+## 🔐 Authentication
 
-python manage.py runserver
+Protected endpoints require a token in the request header:
+Get your token by calling the login or verify-otp endpoint.
 
-## API Endpoints
+---
 
-| Method | Endpoint                  | Description                        | Auth Required |
-| ------ | ------------------------- | ---------------------------------- | ------------- |
-| POST   | /api/auth/register/       | Register a new user                | No            |
-| GET    | /api/profile/me/          | Get current user profile           | Yes           |
-| PUT    | /api/profile/me/          | Update user profile                | Yes           |
-| POST   | /api/onboarding/complete/ | Complete onboarding + queue reward | Yes           |
-| GET    | /api/onboarding/status/   | Check onboarding progress          | Yes           |
+## 👥 User Types
 
-## Sample Registration Request
+- `household` — Community household users (e.g. Amina)
+- `collector` — Informal waste collectors (e.g. Chinedu)
+- `buyer` — Recycling buyers and scrap dealers (e.g. Hassan)
+- `brand` — FMCG brands for EPR compliance (e.g. Chidinma)
 
-POST /api/auth/register/
+## 📝 Sample Register Request
 
+json
 {
-"username": "testuser",
-"email": "test@ecosort.com",
-"password": "password123",
-"phone_number": "08012345678",
-"user_type": "household"
+"email": "amina@ecosort.com",
+"phone_number": "08011111111",
+"password": "1234",
+"user_type": "household",
+"full_name": "Amina Yusuf",
+"location": "Bariga, Lagos",
+"language": "pidgin",
+"waste_type": "plastic"
 }
 
-## Sample Response
+````
 
+## 📝 Sample Login Request
+
+```json
 {
-"message": "Registration successful!",
-"user_id": 1,
-"user_type": "household"
+    "phone_number": "08011111111",
+    "password": "1234",
 }
 
-## User Types
+## 🔗 Links
 
-- household — Community household users
-- collector — Informal waste collectors
-- buyer — Recycling buyers and scrap dealers
-- brand — FMCG brands for EPR compliance
+- Live API: https://ecosort-backend-01ta.onrender.com
+- API Docs: https://rheems.github.io/ecosort-backend/
+- GitHub: https://github.com/Rheems/ecosort-backend
 
-## Team
-
-Team 3 — Eco-Sorters
-Hackathon Submission — April 2026
+Team 3 Eco-Sorters | Hackathon 2026
+````
