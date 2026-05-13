@@ -1,888 +1,625 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome to Ecosort API Docs</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --forest: #1a3a2a;
-  --green: #2d6a4f;
-  --lime: #52b788;
-  --mint: #b7e4c7;
-  --gold: #e9c46a;
-  --amber: #f4a261;
-  --clay: #e76f51;
-  --cream: #fefae0;
-  --dark: #0d1f14;
-  --card: #162a1e;
-  --border: #1f3d2a;
-  --text: #d8f3dc;
-  --muted: #74a98a;
-  --sidebar-w: 260px;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--dark);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* TOP HEADER */
-.header {
-  background: var(--forest);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Fraunces', serif;
-  font-size: 18px;
-  color: var(--mint);
-  font-weight: 600;
-}
-
-.logo-icon {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--lime), var(--green));
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.version-badge {
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  padding: 4px 10px;
-  border-radius: 20px;
-}
-
-.live-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--lime);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.live-dot {
-  width: 7px;
-  height: 7px;
-  background: var(--lime);
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-/* LAYOUT */
-.layout {
-  display: flex;
-  flex: 1;
-}
-
-/* SIDEBAR */
-.sidebar {
-  width: var(--sidebar-w);
-  background: var(--forest);
-  border-right: 1px solid var(--border);
-  padding: 24px 0;
-  position: sticky;
-  top: 57px;
-  height: calc(100vh - 57px);
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-
-.sidebar-section {
-  margin-bottom: 8px;
-}
-
-.sidebar-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--muted);
-  font-family: 'DM Mono', monospace;
-  padding: 8px 20px 4px;
-}
-
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 20px;
-  cursor: pointer;
-  transition: all 0.15s;
-  border-left: 2px solid transparent;
-  text-decoration: none;
-}
-
-.sidebar-item:hover {
-  background: rgba(82, 183, 136, 0.08);
-  border-left-color: var(--lime);
-}
-
-.sidebar-item.active {
-  background: rgba(82, 183, 136, 0.12);
-  border-left-color: var(--lime);
-}
-
-.sidebar-method {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  font-weight: 500;
-  padding: 2px 6px;
-  border-radius: 4px;
-  flex-shrink: 0;
-  letter-spacing: 0.5px;
-}
-
-.m-post { background: rgba(244,162,97,0.15); color: var(--amber); border: 1px solid rgba(244,162,97,0.3); }
-.m-get { background: rgba(82,183,136,0.15); color: var(--lime); border: 1px solid rgba(82,183,136,0.3); }
-.m-put { background: rgba(233,196,106,0.15); color: var(--gold); border: 1px solid rgba(233,196,106,0.3); }
-
-.sidebar-name {
-  font-size: 13px;
-  color: #aaa;
-  flex: 1;
-}
-
-.sidebar-item:hover .sidebar-name,
-.sidebar-item.active .sidebar-name {
-  color: var(--mint);
-}
-
-/* MAIN CONTENT */
-.main {
-  flex: 1;
-  padding: 40px 48px;
-  max-width: 820px;
-}
-
-/* HERO */
-.hero {
-  margin-bottom: 48px;
-  padding-bottom: 40px;
-  border-bottom: 1px solid var(--border);
-}
-
-.hero h1 {
-  font-family: 'Fraunces', serif;
-  font-size: 36px;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 12px;
-  line-height: 1.2;
-}
-
-.hero h1 span {
-  color: var(--lime);
-}
-
-.hero-desc {
-  font-size: 15px;
-  color: var(--muted);
-  line-height: 1.7;
-  max-width: 560px;
-  margin-bottom: 20px;
-}
-
-.base-url-box {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 18px;
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-}
-
-.base-url-label {
-  color: var(--muted);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.base-url-value {
-  color: var(--lime);
-}
-
-.base-url-value a {
-  color: var(--lime);
-  text-decoration: none;
-}
-
-.base-url-value a:hover { text-decoration: underline; }
-
-/* ENDPOINT CARDS */
-.endpoint-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  margin-bottom: 24px;
-  overflow: hidden;
-  transition: border-color 0.2s;
-  scroll-margin-top: 80px;
-}
-
-.endpoint-card:hover { border-color: var(--green); }
-
-.endpoint-card-header {
-  padding: 20px 24px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  cursor: pointer;
-}
-
-.method-pill {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 6px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.pill-post { background: rgba(244,162,97,0.15); color: var(--amber); border: 1px solid rgba(244,162,97,0.3); }
-.pill-get { background: rgba(82,183,136,0.15); color: var(--lime); border: 1px solid rgba(82,183,136,0.3); }
-.pill-put { background: rgba(233,196,106,0.15); color: var(--gold); border: 1px solid rgba(233,196,106,0.3); }
-
-.endpoint-info { flex: 1; }
-
-.endpoint-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 4px;
-  font-family: 'Fraunces', serif;
-}
-
-.endpoint-path {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-.endpoint-plain {
-  font-size: 13px;
-  color: #888;
-  line-height: 1.6;
-}
-
-.auth-tag {
-  font-size: 11px;
-  color: var(--amber);
-  background: rgba(244,162,97,0.1);
-  border: 1px solid rgba(244,162,97,0.2);
-  padding: 3px 10px;
-  border-radius: 20px;
-  flex-shrink: 0;
-  font-family: 'DM Mono', monospace;
-  margin-top: 2px;
-}
-
-.no-auth-tag {
-  font-size: 11px;
-  color: var(--lime);
-  background: rgba(82,183,136,0.1);
-  border: 1px solid rgba(82,183,136,0.2);
-  padding: 3px 10px;
-  border-radius: 20px;
-  flex-shrink: 0;
-  font-family: 'DM Mono', monospace;
-  margin-top: 2px;
-}
-
-.endpoint-body {
-  display: none;
-  border-top: 1px solid var(--border);
-  padding: 24px;
-}
-
-.endpoint-body.open { display: block; }
-
-.code-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--muted);
-  font-family: 'DM Mono', monospace;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.code-block {
-  background: var(--dark);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px 18px;
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  color: var(--lime);
-  white-space: pre;
-  overflow-x: auto;
-  margin-bottom: 20px;
-  line-height: 1.7;
-}
-
-.response-block {
-  background: var(--dark);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px 18px;
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  color: var(--mint);
-  white-space: pre;
-  overflow-x: auto;
-  line-height: 1.7;
-}
-
-.status-pill {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  padding: 3px 10px;
-  border-radius: 5px;
-  background: rgba(82,183,136,0.15);
-  color: var(--lime);
-  border: 1px solid rgba(82,183,136,0.3);
-}
-
-.response-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.auth-note {
-  background: rgba(244,162,97,0.07);
-  border: 1px solid rgba(244,162,97,0.2);
-  border-radius: 8px;
-  padding: 12px 16px;
-  font-size: 13px;
-  color: #888;
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-
-/* SECTION TITLE */
-.section-title {
-  font-family: 'Fraunces', serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 6px;
-  margin-top: 40px;
-  padding-top: 8px;
-}
-
-.section-subtitle {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-
-/* STATS ROW */
-.stats-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 48px;
-  flex-wrap: wrap;
-}
-
-.stat-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px 20px;
-  flex: 1;
-  min-width: 120px;
-}
-
-.stat-number {
-  font-family: 'Fraunces', serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--lime);
-  margin-bottom: 4px;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-footer {
-  text-align: center;
-  padding: 40px;
-  color: #333;
-  font-size: 12px;
-  font-family: 'DM Mono', monospace;
-  border-top: 1px solid var(--border);
-  margin-top: 40px;
-}
-
-footer a { color: #444; text-decoration: none; }
-footer a:hover { color: var(--muted); }
-
-.chevron {
-  color: var(--muted);
-  font-size: 18px;
-  transition: transform 0.2s;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-</style>
-</head>
-<body>
-
-<!-- HEADER -->
-<div class="header">
-  <div class="logo">
-    <div class="logo-icon">🌿</div>
-    Ecosort API
-  </div>
-  <div class="header-right">
-    <span class="version-badge">v2.0</span>
-    <span class="live-badge">
-      <div class="live-dot"></div>
-      Live
-    </span>
-  </div>
-</div>
-
-<div class="layout">
-
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-label">Authentication</div>
-      <a class="sidebar-item" onclick="scrollTo('register')">
-        <span class="sidebar-method m-post">POST</span>
-        <span class="sidebar-name">Register</span>
-      </a>
-      <a class="sidebar-item" onclick="scrollTo('login')">
-        <span class="sidebar-method m-post">POST</span>
-        <span class="sidebar-name">Login</span>
-      </a>
-      <a class="sidebar-item" onclick="scrollTo('request-otp')">
-        <span class="sidebar-method m-post">POST</span>
-        <span class="sidebar-name">Request OTP</span>
-      </a>
-      <a class="sidebar-item" onclick="scrollTo('verify-otp')">
-        <span class="sidebar-method m-post">POST</span>
-        <span class="sidebar-name">Verify OTP</span>
-      </a>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-label">User Profile</div>
-      <a class="sidebar-item" onclick="scrollTo('profile-get')">
-        <span class="sidebar-method m-get">GET</span>
-        <span class="sidebar-name">Get Profile</span>
-      </a>
-      <a class="sidebar-item" onclick="scrollTo('profile-put')">
-        <span class="sidebar-method m-put">PUT</span>
-        <span class="sidebar-name">Update Profile</span>
-      </a>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-label">Onboarding</div>
-      <a class="sidebar-item" onclick="scrollTo('onboarding-status')">
-        <span class="sidebar-method m-get">GET</span>
-        <span class="sidebar-name">Get Status</span>
-      </a>
-      <a class="sidebar-item" onclick="scrollTo('onboarding-complete')">
-        <span class="sidebar-method m-post">POST</span>
-        <span class="sidebar-name">Complete Step</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- MAIN -->
-  <div class="main">
-
-    <!-- HERO -->
-    <div class="hero">
-      <h1>Welcome to <span>Ecosort</span> API Docs 🌿</h1>
-      <p class="hero-desc">
-        This is the backend engine powering Ecosort Nigeria's community-powered waste sorting. Every feature you see in the app runs through these endpoints. Built with Django REST Framework by Team 3 Backend Eco-Sorters.
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ecosort API Docs</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --green: #1db954;
+        --dark: #0a0a0a;
+        --card: #111;
+        --border: #1e1e1e;
+        --text: #e0e0e0;
+        --muted: #666;
+        --accent: #b5ff4d;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--dark);
+        color: var(--text);
+        font-family: "Syne", sans-serif;
+        line-height: 1.6;
+      }
+
+      /* HERO */
+      header {
+        padding: 80px 40px 60px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
+
+      header::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        left: -100px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(29, 185, 84, 0.15),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .badge {
+        display: inline-block;
+        background: rgba(29, 185, 84, 0.1);
+        border: 1px solid var(--green);
+        color: var(--green);
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-weight: 800;
+        line-height: 1.05;
+        margin-bottom: 16px;
+      }
+
+      h1 span {
+        color: var(--green);
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 1.1rem;
+        max-width: 500px;
+        margin-bottom: 32px;
+      }
+
+      .base-url {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-family: "Space Mono", monospace;
+        font-size: 0.85rem;
+      }
+
+      .base-url .dot {
+        width: 8px;
+        height: 8px;
+        background: var(--green);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(0.8);
+        }
+      }
+
+      /* LAYOUT */
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 60px 40px;
+      }
+
+      section {
+        margin-bottom: 60px;
+      }
+
+      .section-label {
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        color: var(--green);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .section-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* ENDPOINT CARDS */
+      .endpoint {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 16px;
+        overflow: hidden;
+        transition: border-color 0.2s;
+      }
+
+      .endpoint:hover {
+        border-color: #333;
+      }
+
+      .endpoint-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 24px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .method {
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 4px;
+        min-width: 50px;
+        text-align: center;
+      }
+
+      .post {
+        background: rgba(29, 185, 84, 0.15);
+        color: var(--green);
+      }
+      .get {
+        background: rgba(59, 130, 246, 0.15);
+        color: #60a5fa;
+      }
+      .put {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+      }
+
+      .path {
+        font-family: "Space Mono", monospace;
+        font-size: 0.85rem;
+        color: var(--text);
+      }
+
+      .desc {
+        margin-left: auto;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .endpoint-body {
+        border-top: 1px solid var(--border);
+        padding: 24px;
+        display: none;
+      }
+
+      .endpoint-body.open {
+        display: block;
+      }
+
+      .field-label {
+        font-size: 0.75rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        font-family: "Space Mono", monospace;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        font-size: 0.85rem;
+      }
+
+      th {
+        text-align: left;
+        padding: 8px 12px;
+        background: #0f0f0f;
+        color: var(--muted);
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        font-weight: 400;
+        letter-spacing: 1px;
+      }
+
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        font-family: "Space Mono", monospace;
+        font-size: 0.8rem;
+      }
+
+      td:first-child {
+        color: var(--accent);
+      }
+
+      .req {
+        color: var(--green);
+        font-size: 11px;
+      }
+      .opt {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      pre {
+        background: #0a0a0a;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+        font-family: "Space Mono", monospace;
+        font-size: 0.78rem;
+        overflow-x: auto;
+        color: #a8ff78;
+        margin-top: 12px;
+      }
+
+      /* AUTH NOTE */
+      .auth-note {
+        background: rgba(29, 185, 84, 0.05);
+        border: 1px solid rgba(29, 185, 84, 0.2);
+        border-radius: 8px;
+        padding: 16px 20px;
+        font-family: "Space Mono", monospace;
+        font-size: 0.8rem;
+        color: var(--green);
+        margin-bottom: 20px;
+      }
+
+      /* FOOTER */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 40px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.85rem;
+        font-family: "Space Mono", monospace;
+      }
+
+      footer a {
+        color: var(--green);
+        text-decoration: none;
+      }
+
+      .chevron {
+        margin-left: auto;
+        color: var(--muted);
+        transition: transform 0.2s;
+      }
+      .chevron.open {
+        transform: rotate(180deg);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="badge">● API Documentation</div>
+      <h1>Ecosort <span>Backend</span></h1>
+      <p class="subtitle">
+        REST API for waste management and recycling platform. Built with Django
+        & PostgreSQL.
       </p>
-      <div class="base-url-box">
-        <span class="base-url-label">Base URL</span>
-        <span class="base-url-value">
-          <a href="https://ecosort-backend-jz4w.onrender.com" target="_blank">
-            https://ecosort-backend-jz4w.onrender.com
-          </a>
-        </span>
+      <div class="base-url">
+        <span class="dot"></span>
+        https://ecosort-backend-01ta.onrender.com
       </div>
-    </div>
+    </header>
 
-    <!-- STATS -->
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-number">8</div>
-        <div class="stat-label">Total Endpoints</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">4</div>
-        <div class="stat-label">User Types</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">5</div>
-        <div class="stat-label">Onboarding Steps</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">v2</div>
-        <div class="stat-label">Current Version</div>
-      </div>
-    </div>
+    <main>
+      <!-- AUTH ENDPOINTS -->
+      <section>
+        <div class="section-label">Authentication</div>
 
-    <!-- AUTH SECTION -->
-    <div class="section-title">🔐 Authentication</div>
-    <p class="section-subtitle">These endpoints handle how users create accounts and log in. No token is needed here these are the starting points for every user journey on Ecosort.</p>
-
-    <!-- REGISTER -->
-    <div class="endpoint-card" id="register">
-      <div class="endpoint-card-header" onclick="toggle(this)">
-        <span class="method-pill pill-post">POST</span>
-        <div class="endpoint-info">
-          <div class="endpoint-title">Register a New User</div>
-          <div class="endpoint-path">/api/auth/register/</div>
-          <div class="endpoint-plain">The user provides their name, phone number, location and what type of user they are household, collector, buyer or brand. Once done, their account is created and onboarding begins automatically.</div>
+        <!-- Register -->
+        <div class="endpoint">
+          <div class="endpoint-header" onclick="toggle(this)">
+            <span class="method post">POST</span>
+            <span class="path">/api/auth/register/</span>
+            <span class="desc">Create new account</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="field-label">Request Body</div>
+            <table>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Required</th>
+              </tr>
+              <tr>
+                <td>email</td>
+                <td>string</td>
+                <td class="req">required</td>
+              </tr>
+              <tr>
+                <td>phone_number</td>
+                <td>string</td>
+                <td class="req">required</td>
+              </tr>
+              <tr>
+                <td>password</td>
+                <td>string</td>
+                <td class="req">required</td>
+              </tr>
+              <tr>
+                <td>user_type</td>
+                <td>household | collector | buyer | brand</td>
+                <td class="req">required</td>
+              </tr>
+              <tr>
+                <td>full_name</td>
+                <td>string</td>
+                <td class="req">required</td>
+              </tr>
+              <tr>
+                <td>location</td>
+                <td>string</td>
+                <td class="opt">optional</td>
+              </tr>
+              <tr>
+                <td>language</td>
+                <td>english | pidgin</td>
+                <td class="opt">optional</td>
+              </tr>
+              <tr>
+                <td>waste_type</td>
+                <td>plastic | paper | glass | metal | organic | mixed</td>
+                <td class="opt">optional</td>
+              </tr>
+            </table>
+            <div class="field-label">Response (201)</div>
+            <pre>
+{ "message": "Registration successful!", "userId": 1, "userType": "household" }</pre
+            >
+          </div>
         </div>
-        <span class="no-auth-tag">Public</span>
-        <span class="chevron">›</span>
-      </div>
-      <div class="endpoint-body">
-        <div class="code-label">Request Body (JSON)</div>
-        <div class="code-block">{
-  "email": "amina@ecosort.com",
-  "phone_number": "08011111111",
-  "password": "1234",
-  "user_type": "household",
-  "full_name": "Amina Yusuf",
-  "location": "Bariga, Lagos",
-  "language": "pidgin",
-  "waste_type": "plastic"
-}</div>
-        <div class="response-row">
-          <div class="code-label">Response</div>
-          <span class="status-pill">201 Created</span>
-        </div>
-        <div class="response-block">{
-  "message": "Registration successful!",
-  "userId": 1,
-  "userType": "household"
-}</div>
-      </div>
-    </div>
 
-    <!-- LOGIN -->
-    <div class="endpoint-card" id="login">
-      <div class="endpoint-card-header" onclick="toggle(this)">
-        <span class="method-pill pill-post">POST</span>
-        <div class="endpoint-info">
-          <div class="endpoint-title">Login with Phone Number</div>
-          <div class="endpoint-path">/api/auth/login/</div>
-          <div class="endpoint-plain">This is the gate into Ecosort. A user enters their phone number and password. If correct, they receive a token like a key that lets them access their profile, onboarding and other protected parts of the platform.</div>
+        <!-- Login -->
+        <div class="endpoint">
+          <div class="endpoint-header" onclick="toggle(this)">
+            <span class="method post">POST</span>
+            <span class="path">/api/auth/login/</span>
+            <span class="desc">Login with phone & password</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="field-label">Request Body</div>
+            <table>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Required</th>
+              </tr>
+              <tr>
+                <td>phone_number</td>
+                <td>string</td>
+                <td class="req">required</td>
+              </tr>
+              <tr>
+                <td>password</td>
+                <td>string</td>
+                <td class="req">required</td>
+              </tr>
+            </table>
+            <div class="field-label">Response (200)</div>
+            <pre>
+{ "message": "Login successful!", "token": "abc123...", "userId": 1, "userType": "household" }</pre
+            >
+          </div>
         </div>
-        <span class="no-auth-tag">Public</span>
-        <span class="chevron">›</span>
-      </div>
-      <div class="endpoint-body">
-        <div class="code-label">Request Body (JSON)</div>
-        <div class="code-block">{
-  "phone_number": "08011111111",
-  "password": "1234"
-}</div>
-        <div class="response-row">
-          <div class="code-label">Response</div>
-          <span class="status-pill">200 OK</span>
-        </div>
-        <div class="response-block">{
-  "message": "Login successful!",
-  "token": "9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b",
-  "userId": 1,
-  "userType": "household"
-}</div>
-      </div>
-    </div>
 
-    <!-- REQUEST OTP -->
-    <div class="endpoint-card" id="request-otp">
-      <div class="endpoint-card-header" onclick="toggle(this)">
-        <span class="method-pill pill-post">POST</span>
-        <div class="endpoint-info">
-          <div class="endpoint-title">Request OTP</div>
-          <div class="endpoint-path">/api/auth/request-otp/</div>
-          <div class="endpoint-plain">For users who find passwords difficult, especially elderly users or those not tech-savvy, this endpoint generates a 4-digit one-time code tied to their phone number. Think of it like the code your bank sends you via SMS. In production, this code will be delivered via SMS through Termii. It expires after 10 minutes.</div>
+        <!-- Request OTP -->
+        <div class="endpoint">
+          <div class="endpoint-header" onclick="toggle(this)">
+            <span class="method post">POST</span>
+            <span class="path">/api/auth/request-otp/</span>
+            <span class="desc">Request OTP code</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="field-label">Request Body</div>
+            <table>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Required</th>
+              </tr>
+              <tr>
+                <td>phone_number</td>
+                <td>string</td>
+                <td class="req">required</td>
+              </tr>
+            </table>
+            <div class="field-label">Response (200)</div>
+            <pre>
+{ "message": "OTP generated successfully!", "otp": "1234" }</pre
+            >
+          </div>
         </div>
-        <span class="no-auth-tag">Public</span>
-        <span class="chevron">›</span>
-      </div>
-      <div class="endpoint-body">
-        <div class="code-label">Request Body (JSON)</div>
-        <div class="code-block">{
-  "phone_number": "08011111111"
-}</div>
-        <div class="response-row">
-          <div class="code-label">Response</div>
-          <span class="status-pill">200 OK</span>
+
+        <!-- Verify OTP -->
+        <div class="endpoint">
+          <div class="endpoint-header" onclick="toggle(this)">
+            <span class="method post">POST</span>
+            <span class="path">/api/auth/verify-otp/</span>
+            <span class="desc">Verify OTP & get token</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="field-label">Request Body</div>
+            <table>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Required</th>
+              </tr>
+              <tr>
+                <td>phone_number</td>
+                <td>string</td>
+                <td class="req">required</td>
+              </tr>
+              <tr>
+                <td>otp</td>
+                <td>string</td>
+                <td class="req">required</td>
+              </tr>
+            </table>
+            <div class="field-label">Response (200)</div>
+            <pre>
+{ "message": "OTP verified! Login successful!", "token": "abc123...", "userId": 1 }</pre
+            >
+          </div>
         </div>
-        <div class="response-block">{
-  "message": "OTP generated successfully!",
-  "otp": "4521",
-  "note": "In production this OTP will be sent via SMS"
-}</div>
-      </div>
-    </div>
+      </section>
 
-    <!-- VERIFY OTP -->
-    <div class="endpoint-card" id="verify-otp">
-      <div class="endpoint-card-header" onclick="toggle(this)">
-        <span class="method-pill pill-post">POST</span>
-        <div class="endpoint-info">
-          <div class="endpoint-title">Verify OTP</div>
-          <div class="endpoint-path">/api/auth/verify-otp/</div>
-          <div class="endpoint-plain">After receiving their 4-digit OTP code, the user enters it here to confirm their identity. If the code is correct and hasn't expired, they are logged in and receive their access token,no password needed at all.</div>
+      <!-- PROTECTED ENDPOINTS -->
+      <section>
+        <div class="section-label">Protected Routes</div>
+        <div class="auth-note">
+          All routes below require: &nbsp; Authorization: Token
+          &lt;your_token&gt;
         </div>
-        <span class="no-auth-tag">Public</span>
-        <span class="chevron">›</span>
-      </div>
-      <div class="endpoint-body">
-        <div class="code-label">Request Body (JSON)</div>
-        <div class="code-block">{
-  "phone_number": "08011111111",
-  "otp": "4521"
-}</div>
-        <div class="response-row">
-          <div class="code-label">Response</div>
-          <span class="status-pill">200 OK</span>
+
+        <!-- Get Profile -->
+        <div class="endpoint">
+          <div class="endpoint-header" onclick="toggle(this)">
+            <span class="method get">GET</span>
+            <span class="path">/api/profile/me/</span>
+            <span class="desc">Get user profile</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="field-label">Response (200)</div>
+            <pre>
+{ "fullName": "John Doe", "location": "Lagos", "languagePreference": "english", "channel": "app", "wasteType": "plastic" }</pre
+            >
+          </div>
         </div>
-        <div class="response-block">{
-  "message": "OTP verified! Login successful!",
-  "token": "9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b",
-  "userId": 1,
-  "userType": "household"
-}</div>
-      </div>
-    </div>
 
-    <!-- PROFILE SECTION -->
-    <div class="section-title">👤 User Profile</div>
-    <p class="section-subtitle">These endpoints let users view and update their personal information stored on Ecosort. A valid token from login is required,the system needs to know whose profile to show or update.</p>
-
-    <!-- GET PROFILE -->
-    <div class="endpoint-card" id="profile-get">
-      <div class="endpoint-card-header" onclick="toggle(this)">
-        <span class="method-pill pill-get">GET</span>
-        <div class="endpoint-info">
-          <div class="endpoint-title">Get My Profile</div>
-          <div class="endpoint-path">/api/profile/me/</div>
-          <div class="endpoint-plain">Fetches all the profile details of the currently logged-in user,their name, location, preferred language, what channel they use (WhatsApp, USSD or App) and their waste type. Like opening your profile page on any app.</div>
+        <!-- Update Profile -->
+        <div class="endpoint">
+          <div class="endpoint-header" onclick="toggle(this)">
+            <span class="method put">PUT</span>
+            <span class="path">/api/profile/me/</span>
+            <span class="desc">Update user profile</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="field-label">Request Body</div>
+            <table>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Required</th>
+              </tr>
+              <tr>
+                <td>fullName</td>
+                <td>string</td>
+                <td class="opt">optional</td>
+              </tr>
+              <tr>
+                <td>location</td>
+                <td>string</td>
+                <td class="opt">optional</td>
+              </tr>
+              <tr>
+                <td>languagePreference</td>
+                <td>english | pidgin</td>
+                <td class="opt">optional</td>
+              </tr>
+              <tr>
+                <td>channel</td>
+                <td>whatsapp | ussd | app</td>
+                <td class="opt">optional</td>
+              </tr>
+              <tr>
+                <td>wasteType</td>
+                <td>plastic | paper | glass | metal | organic | mixed</td>
+                <td class="opt">optional</td>
+              </tr>
+            </table>
+          </div>
         </div>
-        <span class="auth-tag">🔒 Token Required</span>
-        <span class="chevron">›</span>
-      </div>
-      <div class="endpoint-body">
-        <div class="auth-note">🔒 Add this to your request headers: <strong>Authorization: Token YOUR_TOKEN_HERE</strong></div>
-        <div class="response-row">
-          <div class="code-label">Response</div>
-          <span class="status-pill">200 OK</span>
+
+        <!-- Onboarding Status -->
+        <div class="endpoint">
+          <div class="endpoint-header" onclick="toggle(this)">
+            <span class="method get">GET</span>
+            <span class="path">/api/onboarding/status/</span>
+            <span class="desc">Get onboarding progress</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="field-label">Response (200)</div>
+            <pre>
+{ "currentStep": 1, "step1Completed": false, "isCompleted": false, "startedAt": "2026-05-10T..." }</pre
+            >
+          </div>
         </div>
-        <div class="response-block">{
-  "fullName": "Amina Yusuf",
-  "location": "Bariga, Lagos",
-  "languagePreference": "pidgin",
-  "channel": "whatsapp",
-  "wasteType": "plastic"
-}</div>
-      </div>
-    </div>
 
-    <!-- UPDATE PROFILE -->
-    <div class="endpoint-card" id="profile-put">
-      <div class="endpoint-card-header" onclick="toggle(this)">
-        <span class="method-pill pill-put">PUT</span>
-        <div class="endpoint-info">
-          <div class="endpoint-title">Update My Profile</div>
-          <div class="endpoint-path">/api/profile/me/</div>
-          <div class="endpoint-plain">Allows the logged-in user to update their profile details, change their location, switch their preferred language, update their waste type or channel. Like editing your profile settings on WhatsApp or Instagram.</div>
+        <!-- Complete Onboarding -->
+        <div class="endpoint">
+          <div class="endpoint-header" onclick="toggle(this)">
+            <span class="method post">POST</span>
+            <span class="path">/api/onboarding/complete/</span>
+            <span class="desc">Complete an onboarding step</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="field-label">Request Body</div>
+            <table>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Required</th>
+              </tr>
+              <tr>
+                <td>step</td>
+                <td>1 | 2 | 3 | 4 | 5</td>
+                <td class="req">required</td>
+              </tr>
+            </table>
+            <div class="field-label">Response (200)</div>
+            <pre>{ "message": "Step 1 completed!", "nextStep": 2 }</pre>
+          </div>
         </div>
-        <span class="auth-tag">🔒 Token Required</span>
-        <span class="chevron">›</span>
-      </div>
-      <div class="endpoint-body">
-        <div class="auth-note">🔒 Add this to your request headers: <strong>Authorization: Token YOUR_TOKEN_HERE</strong></div>
-        <div class="code-label">Request Body (JSON)</div>
-        <div class="code-block">{
-  "fullName": "Amina Yusuf",
-  "location": "Surulere, Lagos",
-  "languagePreference": "english",
-  "channel": "whatsapp",
-  "wasteType": "organic"
-}</div>
-        <div class="response-row">
-          <div class="code-label">Response</div>
-          <span class="status-pill">200 OK</span>
-        </div>
-        <div class="response-block">{
-  "message": "Profile updated!"
-}</div>
-      </div>
-    </div>
+      </section>
+    </main>
 
-    <!-- ONBOARDING SECTION -->
-    <div class="section-title">🎯 Onboarding</div>
-    <p class="section-subtitle">Every new user goes through a 5-step onboarding journey before using Ecosort fully. These endpoints track their progress and reward them when they complete all 5 steps.</p>
+    <footer>
+      Built by <a href="https://github.com/Rheems">Rheems</a> · Ecosort Backend
+      API
+    </footer>
 
-    <!-- ONBOARDING STATUS -->
-    <div class="endpoint-card" id="onboarding-status">
-      <div class="endpoint-card-header" onclick="toggle(this)">
-        <span class="method-pill pill-get">GET</span>
-        <div class="endpoint-info">
-          <div class="endpoint-title">Check Onboarding Progress</div>
-          <div class="endpoint-path">/api/onboarding/status/</div>
-          <div class="endpoint-plain">Shows exactly where a user is in their onboarding journey which of the 5 steps they've completed and which ones are still pending. Think of it like checking your progress bar when setting up a new phone.</div>
-        </div>
-        <span class="auth-tag">🔒 Token Required</span>
-        <span class="chevron">›</span>
-      </div>
-      <div class="endpoint-body">
-        <div class="auth-note">🔒 Add this to your request headers: <strong>Authorization: Token YOUR_TOKEN_HERE</strong></div>
-        <div class="response-row">
-          <div class="code-label">Response</div>
-          <span class="status-pill">200 OK</span>
-        </div>
-        <div class="response-block">{
-  "currentStep": 3,
-  "step1Completed": true,
-  "step2Completed": true,
-  "step3Completed": false,
-  "step4Completed": false,
-  "step5Completed": false,
-  "isCompleted": false,
-  "startedAt": "2026-04-25T10:00:00Z",
-  "completedAt": null
-}</div>
-      </div>
-    </div>
-
-    <!-- ONBOARDING COMPLETE -->
-    <div class="endpoint-card" id="onboarding-complete">
-      <div class="endpoint-card-header" onclick="toggle(this)">
-        <span class="method-pill pill-post">POST</span>
-        <div class="endpoint-info">
-          <div class="endpoint-title">Complete an Onboarding Step</div>
-          <div class="endpoint-path">/api/onboarding/complete/</div>
-          <div class="endpoint-plain">Called each time a user finishes one of the 5 onboarding steps. When they complete step 5 — the final step — the system marks their onboarding as done and automatically queues their first reward notification. This reward is Ecosort's way of saying "Welcome, you're ready to sort waste and earn!"</div>
-        </div>
-        <span class="auth-tag">🔒 Token Required</span>
-        <span class="chevron">›</span>
-      </div>
-      <div class="endpoint-body">
-        <div class="auth-note">🔒 Add this to your request headers: <strong>Authorization: Token YOUR_TOKEN_HERE</strong></div>
-        <div class="code-label">Request Body (JSON)</div>
-        <div class="code-block">{
-  "step": 1
-}</div>
-        <div class="response-row">
-          <div class="code-label">Response (Steps 1–4)</div>
-          <span class="status-pill">200 OK</span>
-        </div>
-        <div class="response-block" style="margin-bottom:16px">{
-  "message": "Step 1 completed!",
-  "nextStep": 2
-}</div>
-        <div class="response-row">
-          <div class="code-label">Response (Step 5 — Final)</div>
-          <span class="status-pill">200 OK</span>
-        </div>
-        <div class="response-block">{
-  "message": "Onboarding complete! First reward notification queued."
-}</div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<footer>
-  Built with Django REST Framework &nbsp;·&nbsp;
-  <a href="https://github.com/Rheems/ecosort-backend" target="_blank">View on GitHub →</a>
-  <br><br>Team 3 Eco-Sorters · Hackathon 2026
-</footer>
-
-<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal" id="modal-content"></div>
-</div>
-
-<script>
-function toggle(header) {
-  const body = header.nextElementSibling;
-  const chevron = header.querySelector('.chevron');
-  body.classList.toggle('open');
-  chevron.style.transform = body.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0)';
-}
-
-function scrollTo(id) {
-  const el = document.getElementById(id);
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' });
-    const body = el.querySelector('.endpoint-body');
-    const chevron = el.querySelector('.chevron');
-    if (body && !body.classList.contains('open')) {
-      body.classList.add('open');
-      chevron.style.transform = 'rotate(90deg)';
-    }
-  }
-  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-}
-</script>
-
-</body>
+    <script>
+      function toggle(header) {
+        const body = header.nextElementSibling;
+        const chevron = header.querySelector(".chevron");
+        body.classList.toggle("open");
+        chevron.classList.toggle("open");
+      }
+    </script>
+  </body>
 </html>

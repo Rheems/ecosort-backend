@@ -27,7 +27,20 @@ def homepage(request):
             "onboarding": {
                 "status": "GET /api/onboarding/status/",
                 "complete_step": "POST /api/onboarding/complete/",
-            }
+            },
+
+            "education": {
+    "all_guides": "GET /api/education/guides/",
+    "category_guide": "GET /api/education/guides/<category>/",
+    "submit_quiz": "POST /api/education/quiz/submit/",
+    "my_results": "GET /api/education/quiz/results/",
+},
+
+    "pickup": {
+    "create_pickup": "POST /api/pickup/request/",
+    "confirm_pickup": "POST /api/pickup/confirm/",
+    "my_pickups": "GET /api/pickup/my-pickups/",        
+},
         }
     })
 
