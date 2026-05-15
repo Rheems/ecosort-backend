@@ -1,4 +1,3 @@
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -6,8 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from datetime import timedelta
 import secrets
-from .models import PickupRequest, ConfirmationCode
-from .serializer import PickupRequestSerializer, ConfirmationCodeSerializer
+import pickup.serializers as serializers
+from .models import PickupRequest, ConfirmationCode, ConfirmationCodeLog
+from .serializers import PickupRequestSerializer, ConfirmationCodeSerializer
+
 
 # CREATE PICKUP REQUEST
 @api_view(['POST'])
@@ -24,6 +25,15 @@ def create_pickup_request(request):
             pickup=pickup,
             code=code,
             expires_at=expires_at
+        )
+
+        # Log code generation
+        ConfirmationCodeLog.objects.create(
+            pickup=pickup,
+            code_used=code,
+            status='generated',
+            attempted_by=request.user,
+            note='Confirmation code generated for pickup request'
         )
 
         return Response({
@@ -50,9 +60,18 @@ def confirm_pickup(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    # Check if code exists
     try:
         confirmation = ConfirmationCode.objects.get(code=code)
     except ConfirmationCode.DoesNotExist:
+        # Log invalid attempt
+        ConfirmationCodeLog.objects.create(
+            pickup=None,
+            code_used=code,
+            status='invalid_attempt',
+            attempted_by=request.user,
+            note='Code not found in database'
+        )
         return Response(
             {'error': 'Invalid confirmation code'},
             status=status.HTTP_404_NOT_FOUND
@@ -60,6 +79,13 @@ def confirm_pickup(request):
 
     # Check if already used
     if confirmation.is_used:
+        ConfirmationCodeLog.objects.create(
+            pickup=confirmation.pickup,
+            code_used=code,
+            status='invalid_attempt',
+            attempted_by=request.user,
+            note='Code already used'
+        )
         return Response(
             {'error': 'Code already used'},
             status=status.HTTP_400_BAD_REQUEST
@@ -67,16 +93,22 @@ def confirm_pickup(request):
 
     # Check if expired
     if timezone.now() > confirmation.expires_at:
+        ConfirmationCodeLog.objects.create(
+            pickup=confirmation.pickup,
+            code_used=code,
+            status='expired',
+            attempted_by=request.user,
+            note='Code expired'
+        )
         return Response(
             {'error': 'Code has expired'},
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Credit points (10pts per kg)
+    # All checks passed — confirm pickup
     weight_kg = float(weight_kg)
     points = int(weight_kg * 10)
 
-    # Update pickup
     pickup = confirmation.pickup
     pickup.weight_kg = weight_kg
     pickup.points_credited = points
@@ -86,6 +118,17 @@ def confirm_pickup(request):
     # Mark code as used
     confirmation.is_used = True
     confirmation.save()
+
+    # Log successful confirmation
+    ConfirmationCodeLog.objects.create(
+        pickup=pickup,
+        code_used=code,
+        status='confirmed',
+        attempted_by=request.user,
+        weight_kg=weight_kg,
+        points_credited=points,
+        note='Pickup successfully confirmed'
+    )
 
     return Response({
         'message': 'Pickup confirmed!',
@@ -102,3 +145,22 @@ def get_my_pickups(request):
     pickups = PickupRequest.objects.filter(user=request.user).order_by('-created_at')
     serializer = PickupRequestSerializer(pickups, many=True)
     return Response(serializer.data)
+
+
+# GET CONFIRMATION CODE LOGS (admin use)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_code_logs(request):
+    logs = ConfirmationCodeLog.objects.filter(
+        attempted_by=request.user
+    ).order_by('-timestamp')
+
+    data = [{
+        'status': log.status,
+        'weight_kg': log.weight_kg,
+        'points_credited': log.points_credited,
+        'timestamp': log.timestamp,
+        'note': log.note,
+    } for log in logs]
+
+    return Response(data, status=status.HTTP_200_OK)
