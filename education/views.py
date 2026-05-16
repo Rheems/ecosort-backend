@@ -4,6 +4,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Category, QuizQuestion, QuizResult
 from .serializer import CategorySerializer, QuizSubmitSerializer, QuizResultSerializer
+from drf_spectacular.utils import extend_schema
+
 
 # GET ALL 6 CATEGORY GUIDES
 @api_view(['GET'])
@@ -100,4 +102,12 @@ def submit_quiz(request):
 def get_my_results(request):
     results = QuizResult.objects.filter(user=request.user).order_by('-completed_at')
     serializer = QuizResultSerializer(results, many=True)
+    return Response(serializer.data)
+
+@extend_schema(responses=CategorySerializer)
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_all_guides(request):
+    categories = Category.objects.all()
+    serializer = CategorySerializer(categories, many=True)
     return Response(serializer.data)

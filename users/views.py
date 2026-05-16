@@ -1,3 +1,4 @@
+from django.db import models
 from .models import User, UserProfile, OnboardingSession, RewardNotificationQueue, OTPVerification
 from rest_framework import status
 from rest_framework.response import Response
@@ -5,8 +6,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 from django.utils import timezone
+from django.db.models import Sum
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import RegisterSerializer, UserProfileSerializer, OnboardingSessionSerializer
+import random
 
 
 # REGISTER
@@ -36,10 +39,16 @@ def login(request):
     try:
         user = User.objects.get(phone_number=phone_number)
     except User.DoesNotExist:
-        return Response({'error': 'Invalid phone number or password'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'error': 'Invalid phone number or password'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     if not user.check_password(password):
-        return Response({'error': 'Invalid phone number or password'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'error': 'Invalid phone number or password'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     token, created = Token.objects.get_or_create(user=user)
     return Response({
@@ -47,7 +56,7 @@ def login(request):
         'token': token.key,
         'user_id': user.id,
         'user_type': user.user_type,
-    })
+    }, status=status.HTTP_200_OK)
 
 
 # REQUEST OTP
@@ -59,11 +68,12 @@ def request_otp(request):
     try:
         user = User.objects.get(phone_number=phone_number)
     except User.DoesNotExist:
-        return Response({'error': 'No account found with this phone number'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {'error': 'No account found with this phone number'},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
-    import random
     otp = str(random.randint(1000, 9999))
-
     OTPVerification.objects.create(user=user, otp=otp)
 
     return Response({
@@ -83,7 +93,10 @@ def verify_otp(request):
     try:
         user = User.objects.get(phone_number=phone_number)
     except User.DoesNotExist:
-        return Response({'error': 'No account found with this phone number'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {'error': 'No account found with this phone number'},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
     try:
         otp_record = OTPVerification.objects.filter(
@@ -91,13 +104,22 @@ def verify_otp(request):
             is_used=False
         ).latest('created_at')
     except OTPVerification.DoesNotExist:
-        return Response({'error': 'No OTP found. Please request a new one'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {'error': 'No OTP found. Please request a new one'},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
     if not otp_record.is_valid():
-        return Response({'error': 'OTP has expired. Please request a new one'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'error': 'OTP has expired. Please request a new one'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     if otp_record.otp != otp:
-        return Response({'error': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'error': 'Invalid OTP'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     otp_record.is_used = True
     otp_record.save()
@@ -118,7 +140,10 @@ def profile(request):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
     except UserProfile.DoesNotExist:
-        return Response({'message': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {'message': 'Profile not found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
     if request.method == 'GET':
         serializer = UserProfileSerializer(user_profile)
@@ -132,6 +157,23 @@ def profile(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# GET POINTS BALANCE
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_points(request):
+    from pickup.models import PickupRequest
+    total_points = PickupRequest.objects.filter(
+        user=request.user,
+        status='completed'
+    ).aggregate(total=Sum('points_credited'))['total'] or 0
+
+    return Response({
+        'user_id': request.user.id,
+        'total_points': total_points,
+        'message': f'You have {total_points} points'
+    }, status=status.HTTP_200_OK)
+
+
 # COMPLETE ONBOARDING
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -139,7 +181,10 @@ def complete_onboarding(request):
     try:
         session = OnboardingSession.objects.get(user=request.user)
     except OnboardingSession.DoesNotExist:
-        return Response({'message': 'Onboarding session not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {'message': 'Onboarding session not found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
     if session.is_completed:
         return Response({'message': 'Onboarding already completed!'})
@@ -174,9 +219,11 @@ def complete_onboarding(request):
         return Response({
             'message': 'Onboarding complete! First reward notification queued.',
         }, status=status.HTTP_200_OK)
-
     else:
-        return Response({'message': 'Invalid step!'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'message': 'Invalid step!'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     session.save()
     return Response({
@@ -194,73 +241,7 @@ def onboarding_status(request):
         serializer = OnboardingSessionSerializer(session)
         return Response(serializer.data)
     except OnboardingSession.DoesNotExist:
-        return Response({'message': 'No onboarding session found'}, status=status.HTTP_404_NOT_FOUND)
-
-        # REQUEST OTP
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def request_otp(request):
-    phone_number = request.data.get('phone_number')
-
-    try:
-        user = User.objects.get(phone_number=phone_number)
-    except User.DoesNotExist:
-        return Response({'error': 'No account found with this phone number'}, status=status.HTTP_404_NOT_FOUND)
-
-    # Generate 4 digit OTP
-    import random
-    otp = str(random.randint(1000, 9999))
-
-    # Save OTP to database
-    OTPVerification.objects.create(user=user, otp=otp)
-
-    # In production this is where you send via Termii SMS
-    # For now we return it in the response for testing
-    return Response({
-        'message': 'OTP generated successfully!',
-        'otp': otp,
-        'note': 'In production this OTP will be sent via SMS'
-    }, status=status.HTTP_200_OK)
-
-
-# VERIFY OTP
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def verify_otp(request):
-    phone_number = request.data.get('phone_number')
-    otp = request.data.get('otp')
-
-    try:
-        user = User.objects.get(phone_number=phone_number)
-    except User.DoesNotExist:
-        return Response({'error': 'No account found with this phone number'}, status=status.HTTP_404_NOT_FOUND)
-
-    # Get latest OTP for this user
-    try:
-        otp_record = OTPVerification.objects.filter(
-            user=user,
-            is_used=False
-        ).latest('created_at')
-    except OTPVerification.DoesNotExist:
-        return Response({'error': 'No OTP found. Please request a new one'}, status=status.HTTP_404_NOT_FOUND)
-
-    # Check if OTP is valid
-    if not otp_record.is_valid():
-        return Response({'error': 'OTP has expired. Please request a new one'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Check if OTP matches
-    if otp_record.otp != otp:
-        return Response({'error': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Mark OTP as used
-    otp_record.is_used = True
-    otp_record.save()
-
-    # Generate token
-    token, created = Token.objects.get_or_create(user=user)
-    return Response({
-        'message': 'OTP verified! Login successful!',
-        'token': token.key,
-        'user_id': user.id,
-        'user_type': user.user_type,
-    }, status=status.HTTP_200_OK)
+        return Response(
+            {'message': 'No onboarding session found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
