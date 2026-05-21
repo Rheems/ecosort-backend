@@ -26,6 +26,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -103,4 +104,13 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Backend API for Ecosort Nigeria community-powered waste sorting platform',
     'VERSION': '2.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'CORS_ALLOW_ALL_ORIGINS': True,
 }
+
+CORS_ALLOW_HEADERS = [
+    'authorization',
+    'content-type',
+    'accept',
+    'origin',
+    'x-requested-with',
+]
