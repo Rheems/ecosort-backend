@@ -1,5 +1,10 @@
 import os
-from pathlib import Path
+from pathlib import Path 
+from dotenv import load_dotenv
+
+load_dotenv()
+AT_USERNAME = os.getenv('AT_USERNAME')
+AT_API_KEY = os.getenv('AT_API_KEY')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,6 +28,8 @@ INSTALLED_APPS = [
     'education',
     'pickup',
     'marketplace',
+    'corsheaders',
+    'myapp',
 ]
 
 MIDDLEWARE = [

@@ -1,6 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
+from django.urls import path, include 
+urlpatterns = [
+    path('',
+    include('myapp.urls')),
+]
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 def homepage(request):
