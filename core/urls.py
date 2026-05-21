@@ -41,6 +41,19 @@ def homepage(request):
     "confirm_pickup": "POST /api/pickup/confirm/",
     "my_pickups": "GET /api/pickup/my-pickups/",        
 },
+
+"marketplace": {
+    "all_listings": "GET /api/marketplace/listings/",
+    "create_listing": "POST /api/marketplace/listings/create/",
+    "my_listings": "GET /api/marketplace/listings/my/",
+    "single_listing": "GET /api/marketplace/listings/<id>/",
+    "buy_listing": "POST /api/marketplace/listings/<id>/buy/",
+    "cancel_listing": "POST /api/marketplace/listings/<id>/cancel/",
+    "my_purchases": "GET /api/marketplace/purchases/",
+    "pricing_guide": "GET /api/marketplace/pricing/",
+    "ussd": "POST /api/marketplace/ussd/",
+},
+
         }
     })
 
@@ -53,5 +66,7 @@ urlpatterns = [
     path('', homepage, name='home'),
     path('api/education/', include('education.urls')),
     path('api/pickup/', include('pickup.urls')),
+    path('api/marketplace/', include('marketplace.urls')),
+
 
 ]

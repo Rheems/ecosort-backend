@@ -125,5 +125,57 @@ if created:
 else:
     print("⏭️ E-waste already exists, skipping")
 
+    # ── PRICING REFERENCE ──
+from marketplace.models import PricingReference
+
+PricingReference.objects.get_or_create(
+    material_type='plastic',
+    defaults={
+        'min_price_per_kg': 80,
+        'max_price_per_kg': 100,
+        'suggested_price_per_kg': 90,
+        'source': 'Kaltani/Lagos Market 2026'
+    }
+)
+PricingReference.objects.get_or_create(
+    material_type='paper',
+    defaults={
+        'min_price_per_kg': 30,
+        'max_price_per_kg': 50,
+        'suggested_price_per_kg': 40,
+        'source': 'Lagos Market 2026'
+    }
+)
+PricingReference.objects.get_or_create(
+    material_type='glass',
+    defaults={
+        'min_price_per_kg': 20,
+        'max_price_per_kg': 40,
+        'suggested_price_per_kg': 30,
+        'source': 'Lagos Market 2026'
+    }
+)
+PricingReference.objects.get_or_create(
+    material_type='metal',
+    defaults={
+        'min_price_per_kg': 500,
+        'max_price_per_kg': 600,
+        'suggested_price_per_kg': 550,
+        'source': 'V-Martins Lagos 2026'
+    }
+)
+PricingReference.objects.get_or_create(
+    material_type='organic',
+    defaults={
+        'min_price_per_kg': 10,
+        'max_price_per_kg': 20,
+        'suggested_price_per_kg': 15,
+        'source': 'Lagos Market 2026'
+    }
+)
+print("✅ Pricing reference data added!")
+
+print("\n🌿 Database population complete!")
+
 
 print("\n🌿 Database population complete!")

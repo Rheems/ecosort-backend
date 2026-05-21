@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'users',
     'education',
     'pickup',
+    'marketplace',
 ]
 
 MIDDLEWARE = [
