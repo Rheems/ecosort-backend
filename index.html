@@ -37,7 +37,6 @@
         flex-direction: column;
       }
 
-      /* HEADER */
       .header {
         background: var(--forest);
         border-bottom: 1px solid var(--border);
@@ -107,13 +106,10 @@
         }
       }
 
-      /* LAYOUT */
       .layout {
         display: flex;
         flex: 1;
       }
-
-      /* SIDEBAR */
       .sidebar {
         width: var(--sidebar-w);
         background: var(--forest);
@@ -189,14 +185,11 @@
         color: var(--mint);
       }
 
-      /* MAIN */
       .main {
         flex: 1;
         padding: 40px 48px;
         max-width: 820px;
       }
-
-      /* HERO */
       .hero {
         margin-bottom: 48px;
         padding-bottom: 40px;
@@ -245,7 +238,6 @@
         text-decoration: underline;
       }
 
-      /* STATS */
       .stats-row {
         display: flex;
         gap: 12px;
@@ -272,7 +264,6 @@
         color: var(--muted);
       }
 
-      /* SECTIONS */
       .section-title {
         font-family: "Fraunces", serif;
         font-size: 22px;
@@ -289,7 +280,6 @@
         line-height: 1.6;
       }
 
-      /* ENDPOINT CARDS */
       .endpoint-card {
         background: var(--card);
         border: 1px solid var(--border);
@@ -453,6 +443,16 @@
         margin-bottom: 20px;
         line-height: 1.6;
       }
+      .at-note {
+        background: rgba(82, 183, 136, 0.07);
+        border: 1px solid rgba(82, 183, 136, 0.2);
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
 
       footer {
         text-align: center;
@@ -479,7 +479,7 @@
         Ecosort API
       </div>
       <div class="header-right">
-        <span class="version-badge">v2.0</span>
+        <span class="version-badge">v3.0</span>
         <span class="live-badge"
           ><div class="live-dot"></div>
           Live</span
@@ -488,7 +488,6 @@
     </div>
 
     <div class="layout">
-      <!-- SIDEBAR -->
       <div class="sidebar">
         <div class="sidebar-section">
           <div class="sidebar-label">Authentication</div>
@@ -569,9 +568,46 @@
             ><span class="sidebar-name">My Pickups</span></a
           >
         </div>
+        <div class="sidebar-section">
+          <div class="sidebar-label">Marketplace</div>
+          <a class="sidebar-item" onclick="goTo('all-listings')"
+            ><span class="sidebar-method m-get">GET</span
+            ><span class="sidebar-name">All Listings</span></a
+          >
+          <a class="sidebar-item" onclick="goTo('create-listing')"
+            ><span class="sidebar-method m-post">POST</span
+            ><span class="sidebar-name">Create Listing</span></a
+          >
+          <a class="sidebar-item" onclick="goTo('my-listings')"
+            ><span class="sidebar-method m-get">GET</span
+            ><span class="sidebar-name">My Listings</span></a
+          >
+          <a class="sidebar-item" onclick="goTo('buy-listing')"
+            ><span class="sidebar-method m-post">POST</span
+            ><span class="sidebar-name">Buy Listing</span></a
+          >
+          <a class="sidebar-item" onclick="goTo('my-purchases')"
+            ><span class="sidebar-method m-get">GET</span
+            ><span class="sidebar-name">My Purchases</span></a
+          >
+          <a class="sidebar-item" onclick="goTo('pricing-guide')"
+            ><span class="sidebar-method m-get">GET</span
+            ><span class="sidebar-name">Pricing Guide</span></a
+          >
+          <a class="sidebar-item" onclick="goTo('ussd')"
+            ><span class="sidebar-method m-post">POST</span
+            ><span class="sidebar-name">USSD Handler</span></a
+          >
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-label">SMS — Africa's Talking</div>
+          <a class="sidebar-item" onclick="goTo('test-sms')"
+            ><span class="sidebar-method m-post">POST</span
+            ><span class="sidebar-name">Send SMS</span></a
+          >
+        </div>
       </div>
 
-      <!-- MAIN -->
       <div class="main">
         <div class="hero">
           <h1>Welcome to <span>Ecosort</span> API Docs 🌿</h1>
@@ -594,7 +630,7 @@
 
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-number">16</div>
+            <div class="stat-number">26</div>
             <div class="stat-label">Total Endpoints</div>
           </div>
           <div class="stat-card">
@@ -606,7 +642,7 @@
             <div class="stat-label">Waste Categories</div>
           </div>
           <div class="stat-card">
-            <div class="stat-number">v2</div>
+            <div class="stat-number">v3</div>
             <div class="stat-label">Current Version</div>
           </div>
         </div>
@@ -690,7 +726,7 @@
               <div class="endpoint-path">/api/auth/request-otp/</div>
               <div class="endpoint-plain">
                 Generates a 4-digit OTP tied to a phone number. Expires after 10
-                minutes. In production, sent via SMS through Termii.
+                minutes. Sent via Africa's Talking SMS in production.
               </div>
             </div>
             <span class="no-auth-tag">Public</span
@@ -718,7 +754,7 @@
               <div class="endpoint-path">/api/auth/verify-otp/</div>
               <div class="endpoint-plain">
                 Verifies the OTP code. If correct and not expired, returns a
-                login token — no password needed.
+                login token.
               </div>
             </div>
             <span class="no-auth-tag">Public</span
@@ -744,8 +780,7 @@
         <!-- PROFILE -->
         <div class="section-title">👤 User Profile</div>
         <p class="section-subtitle">
-          View and update personal information. A valid token is required for
-          all profile endpoints.
+          View and update personal information. A valid token is required.
         </p>
 
         <div class="endpoint-card" id="profile-get">
@@ -755,8 +790,7 @@
               <div class="endpoint-title">Get My Profile</div>
               <div class="endpoint-path">/api/profile/me/</div>
               <div class="endpoint-plain">
-                Fetches the profile of the currently logged-in user — name,
-                location, language, channel and waste type.
+                Fetches the profile of the currently logged-in user.
               </div>
             </div>
             <span class="auth-tag">🔒 Token Required</span
@@ -786,7 +820,7 @@
               <div class="endpoint-path">/api/profile/me/</div>
               <div class="endpoint-plain">
                 Update profile details like location, language, waste type or
-                preferred channel.
+                channel.
               </div>
             </div>
             <span class="auth-tag">🔒 Token Required</span
@@ -818,7 +852,7 @@
               <div class="endpoint-path">/api/profile/points/</div>
               <div class="endpoint-plain">
                 Returns total points earned from confirmed waste pickups. 10
-                points credited per kg of waste collected.
+                points per kg.
               </div>
             </div>
             <span class="auth-tag">🔒 Token Required</span
@@ -853,8 +887,7 @@
               <div class="endpoint-title">Check Onboarding Progress</div>
               <div class="endpoint-path">/api/onboarding/status/</div>
               <div class="endpoint-plain">
-                Shows which of the 5 steps a user has completed and which are
-                still pending.
+                Shows which of the 5 steps a user has completed.
               </div>
             </div>
             <span class="auth-tag">🔒 Token Required</span
@@ -884,8 +917,8 @@
               <div class="endpoint-title">Complete an Onboarding Step</div>
               <div class="endpoint-path">/api/onboarding/complete/</div>
               <div class="endpoint-plain">
-                Called when a user finishes one of the 5 steps. Completing step
-                5 triggers a reward notification automatically.
+                Called when a user finishes one of the 5 steps. Step 5 triggers
+                a reward notification.
               </div>
             </div>
             <span class="auth-tag">🔒 Token Required</span
@@ -898,19 +931,11 @@
             <div class="code-label">Request Body (JSON)</div>
             <div class="code-block">{ "step": 1 }</div>
             <div class="response-row">
-              <div class="code-label">Response (Steps 1–4)</div>
-              <span class="status-pill">200 OK</span>
-            </div>
-            <div class="response-block" style="margin-bottom: 16px">
-              { "message": "Step 1 completed!", "nextStep": 2 }
-            </div>
-            <div class="response-row">
-              <div class="code-label">Response (Step 5 — Final)</div>
+              <div class="code-label">Response</div>
               <span class="status-pill">200 OK</span>
             </div>
             <div class="response-block">
-              { "message": "Onboarding complete! First reward notification
-              queued." }
+              { "message": "Step 1 completed!", "nextStep": 2 }
             </div>
           </div>
         </div>
@@ -918,9 +943,8 @@
         <!-- EDUCATION -->
         <div class="section-title">📚 Education Engine</div>
         <p class="section-subtitle">
-          Six waste sorting modules — plastic, glass, metal, paper, organic and
-          e-waste. Each has a sorting guide and a 5-question quiz. Pass all 6 to
-          unlock the "Full Sorter" master badge.
+          Six waste sorting modules with guides and 5-question quizzes. Pass all
+          6 to unlock the Full Sorter master badge.
         </p>
 
         <div class="endpoint-card" id="all-guides">
@@ -943,13 +967,11 @@
               <span class="status-pill">200 OK</span>
             </div>
             <div class="response-block">
-              [ { "id": 1, "name": "plastic", "description": "Plastic waste
-              includes bottles and containers...", "sorting_guide": "1. Rinse
-              all bottles\n2. Flatten to save space...", "tips": "Avoid pure
-              water sachets and styrofoam.", "questions": [...] }, { "id": 2,
-              "name": "glass", ... }, { "id": 3, "name": "metal", ... }, { "id":
-              4, "name": "paper", ... }, { "id": 5, "name": "organic", ... }, {
-              "id": 6, "name": "ewaste", ... } ]
+              [ { "id": 1, "name": "plastic", "description": "...",
+              "sorting_guide": "...", "tips": "...", "questions": [...] }, {
+              "id": 2, "name": "glass", ... }, { "id": 3, "name": "metal", ...
+              }, { "id": 4, "name": "paper", ... }, { "id": 5, "name":
+              "organic", ... }, { "id": 6, "name": "ewaste", ... } ]
             </div>
           </div>
         </div>
@@ -963,9 +985,8 @@
                 /api/education/guides/&lt;category&gt;/
               </div>
               <div class="endpoint-plain">
-                Fetch the guide and quiz for one specific category. Replace
-                &lt;category&gt; with: plastic, glass, metal, paper, organic or
-                ewaste.
+                Fetch guide and quiz for one category. Options: plastic, glass,
+                metal, paper, organic, ewaste.
               </div>
             </div>
             <span class="no-auth-tag">Public</span
@@ -981,12 +1002,12 @@
             <div class="response-block">
               { "id": 1, "name": "plastic", "description": "Plastic waste
               includes bottles and containers...", "sorting_guide": "1. Rinse
-              all plastic bottles\n2. Flatten to save space\n3. Remove all
-              caps", "tips": "Avoid pure water sachets, styrofoam and plastic
-              bags.", "questions": [ { "id": 1, "question": "What should you do
-              to plastic bottles before sorting?", "option_a": "Crush them with
-              your feet", "option_b": "Rinse and flatten them", "option_c":
-              "Burn them", "option_d": "Leave them as they are" } ] }
+              all bottles\n2. Flatten to save space...", "tips": "Avoid pure
+              water sachets and styrofoam.", "questions": [ { "id": 1,
+              "question": "What should you do to plastic bottles before
+              sorting?", "option_a": "Crush them", "option_b": "Rinse and
+              flatten them", "option_c": "Burn them", "option_d": "Leave them" }
+              ] }
             </div>
           </div>
         </div>
@@ -998,9 +1019,8 @@
               <div class="endpoint-title">Submit Quiz Answers</div>
               <div class="endpoint-path">/api/education/quiz/submit/</div>
               <div class="endpoint-plain">
-                Submit answers for a category quiz. Returns score, badge awarded
-                and feedback. Gold = 100%, Silver = 60%+, Bronze = 40%+. Earn
-                all 6 badges to unlock the Full Sorter master badge.
+                Submit answers. Gold = 100%, Silver = 60%+, Bronze = 40%+. All 6
+                badges unlocks Full Sorter.
               </div>
             </div>
             <span class="auth-tag">🔒 Token Required</span
@@ -1021,10 +1041,7 @@
             </div>
             <div class="response-block">
               { "score": 4, "total": 5, "percentage": 80.0, "badge_awarded":
-              "silver", "full_sorter_unlocked": false, "feedback": [ {
-              "question": "What happens if you mix styrofoam with plastic?",
-              "your_answer": "A", "correct_answer": "C", "hint": "Review the
-              plastic sorting guide" } ] }
+              "silver", "full_sorter_unlocked": false, "feedback": [...] }
             </div>
           </div>
         </div>
@@ -1036,8 +1053,7 @@
               <div class="endpoint-title">My Quiz Results</div>
               <div class="endpoint-path">/api/education/quiz/results/</div>
               <div class="endpoint-plain">
-                Returns all quiz results for the logged-in user — scores, badges
-                earned and completion dates.
+                Returns all quiz results — scores, badges and completion dates.
               </div>
             </div>
             <span class="auth-tag">🔒 Token Required</span
@@ -1062,9 +1078,8 @@
         <!-- PICKUP -->
         <div class="section-title">🚛 Pickup & Confirmation</div>
         <p class="section-subtitle">
-          Households request waste pickups and receive a secure confirmation
-          code. When the collector confirms the code, 10 points are credited per
-          kg of waste collected.
+          Households request pickups and receive a secure confirmation code.
+          Collector confirms the code and 10 points are credited per kg.
         </p>
 
         <div class="endpoint-card" id="create-pickup">
@@ -1074,9 +1089,8 @@
               <div class="endpoint-title">Create Pickup Request</div>
               <div class="endpoint-path">/api/pickup/request/</div>
               <div class="endpoint-plain">
-                Creates a new pickup request and generates a cryptographic
-                confirmation code. The code expires in 4 hours and can only be
-                used once.
+                Creates a pickup request and generates a cryptographic code.
+                Expires in 4 hours, single-use.
               </div>
             </div>
             <span class="auth-tag">🔒 Token Required</span
@@ -1096,9 +1110,8 @@
             </div>
             <div class="response-block">
               { "message": "Pickup request created!", "pickup_id": 1,
-              "confirmation_code": "a3f9d2e1b4c87f2d9e6a3b8c1d4e7f2a...",
-              "expires_at": "2026-05-13T14:00:00Z", "note": "Code expires in 4
-              hours" }
+              "confirmation_code": "a3f9d2e1b4c87f2d...", "expires_at":
+              "2026-05-13T14:00:00Z", "note": "Code expires in 4 hours" }
             </div>
           </div>
         </div>
@@ -1110,9 +1123,8 @@
               <div class="endpoint-title">Confirm Pickup with Code</div>
               <div class="endpoint-path">/api/pickup/confirm/</div>
               <div class="endpoint-plain">
-                Collector submits the confirmation code and actual weight.
-                System validates the code and credits 10 points per kg. Code is
-                single-use and expires after 4 hours.
+                Collector submits code and weight. 10 points credited per kg.
+                Code is single-use, 4-hour expiry.
               </div>
             </div>
             <span class="auth-tag">🔒 Token Required</span
@@ -1124,8 +1136,7 @@
             </div>
             <div class="code-label">Request Body (JSON)</div>
             <div class="code-block">
-              { "code": "a3f9d2e1b4c87f2d9e6a3b8c1d4e7f2a...", "weight_kg": 4.5
-              }
+              { "code": "a3f9d2e1b4c87f2d...", "weight_kg": 4.5 }
             </div>
             <div class="response-row">
               <div class="code-label">Response</div>
@@ -1145,8 +1156,7 @@
               <div class="endpoint-title">My Pickup Requests</div>
               <div class="endpoint-path">/api/pickup/my-pickups/</div>
               <div class="endpoint-plain">
-                Returns all pickup requests made by the logged-in user with
-                their current status and points credited.
+                Returns all pickup requests with status and points credited.
               </div>
             </div>
             <span class="auth-tag">🔒 Token Required</span
@@ -1164,6 +1174,305 @@
               [ { "id": 1, "waste_type": "plastic", "weight_kg": 4.5,
               "points_credited": 45, "status": "completed", "created_at":
               "2026-05-13T10:00:00Z" } ]
+            </div>
+          </div>
+        </div>
+
+        <!-- MARKETPLACE -->
+        <div class="section-title">🏪 Marketplace</div>
+        <p class="section-subtitle">
+          Sellers list recyclable materials and buyers purchase them. Listings
+          auto-expire after 48 hours. Accessible via app and USSD.
+        </p>
+
+        <div class="endpoint-card" id="all-listings">
+          <div class="endpoint-card-header" onclick="toggle(this)">
+            <span class="method-pill pill-get">GET</span>
+            <div class="endpoint-info">
+              <div class="endpoint-title">Get All Active Listings</div>
+              <div class="endpoint-path">/api/marketplace/listings/</div>
+              <div class="endpoint-plain">
+                Returns all active listings. Filter by ?material_type=plastic.
+                Expired listings are auto-removed.
+              </div>
+            </div>
+            <span class="no-auth-tag">Public</span
+            ><span class="chevron">›</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="code-label">Optional Filter</div>
+            <div class="code-block">
+              /api/marketplace/listings/?material_type=plastic
+            </div>
+            <div class="response-row">
+              <div class="code-label">Response</div>
+              <span class="status-pill">200 OK</span>
+            </div>
+            <div class="response-block">
+              [ { "id": 1, "seller_name": "amina_yusuf", "material_type":
+              "plastic", "quantity_kg": 10.0, "price_per_kg": 90.0,
+              "total_price": 900.0, "location": "Bariga, Lagos", "status":
+              "active", "expires_at": "2026-05-15T10:00:00Z", "is_expired":
+              false } ]
+            </div>
+          </div>
+        </div>
+
+        <div class="endpoint-card" id="create-listing">
+          <div class="endpoint-card-header" onclick="toggle(this)">
+            <span class="method-pill pill-post">POST</span>
+            <div class="endpoint-info">
+              <div class="endpoint-title">Create Listing</div>
+              <div class="endpoint-path">/api/marketplace/listings/create/</div>
+              <div class="endpoint-plain">
+                Create a new material listing. Auto-expires after 48 hours.
+              </div>
+            </div>
+            <span class="auth-tag">🔒 Token Required</span
+            ><span class="chevron">›</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="auth-note">
+              🔒 Header: <strong>Authorization: Token YOUR_TOKEN_HERE</strong>
+            </div>
+            <div class="code-label">Request Body (JSON)</div>
+            <div class="code-block">
+              { "material_type": "plastic", "quantity_kg": 10.0, "price_per_kg":
+              90.0, "location": "Bariga, Lagos", "description": "Clean sorted
+              PET bottles" }
+            </div>
+            <div class="response-row">
+              <div class="code-label">Response</div>
+              <span class="status-pill">201 Created</span>
+            </div>
+            <div class="response-block">
+              { "message": "Listing created successfully!", "listing_id": 1,
+              "material_type": "plastic", "quantity_kg": 10.0, "price_per_kg":
+              90.0, "total_price": 900.0, "expires_at": "2026-05-15T10:00:00Z",
+              "note": "Listing expires in 48 hours" }
+            </div>
+          </div>
+        </div>
+
+        <div class="endpoint-card" id="my-listings">
+          <div class="endpoint-card-header" onclick="toggle(this)">
+            <span class="method-pill pill-get">GET</span>
+            <div class="endpoint-info">
+              <div class="endpoint-title">My Listings</div>
+              <div class="endpoint-path">/api/marketplace/listings/my/</div>
+              <div class="endpoint-plain">
+                Returns all listings by the logged-in user including active,
+                sold and expired.
+              </div>
+            </div>
+            <span class="auth-tag">🔒 Token Required</span
+            ><span class="chevron">›</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="auth-note">
+              🔒 Header: <strong>Authorization: Token YOUR_TOKEN_HERE</strong>
+            </div>
+            <div class="response-row">
+              <div class="code-label">Response</div>
+              <span class="status-pill">200 OK</span>
+            </div>
+            <div class="response-block">
+              [ { "id": 1, "material_type": "plastic", "quantity_kg": 10.0,
+              "price_per_kg": 90.0, "total_price": 900.0, "status": "active",
+              "expires_at": "2026-05-15T10:00:00Z" } ]
+            </div>
+          </div>
+        </div>
+
+        <div class="endpoint-card" id="buy-listing">
+          <div class="endpoint-card-header" onclick="toggle(this)">
+            <span class="method-pill pill-post">POST</span>
+            <div class="endpoint-info">
+              <div class="endpoint-title">Buy a Listing</div>
+              <div class="endpoint-path">
+                /api/marketplace/listings/&lt;id&gt;/buy/
+              </div>
+              <div class="endpoint-plain">
+                Purchase a listing. Creates a transaction, marks listing sold
+                and returns seller contact to arrange pickup.
+              </div>
+            </div>
+            <span class="auth-tag">🔒 Token Required</span
+            ><span class="chevron">›</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="auth-note">
+              🔒 Header: <strong>Authorization: Token YOUR_TOKEN_HERE</strong>
+            </div>
+            <div class="code-label">Example URL</div>
+            <div class="code-block">/api/marketplace/listings/1/buy/</div>
+            <div class="response-row">
+              <div class="code-label">Response</div>
+              <span class="status-pill">201 Created</span>
+            </div>
+            <div class="response-block">
+              { "message": "Purchase successful! Contact seller to arrange
+              pickup.", "transaction_id": 1, "material_type": "plastic",
+              "quantity_kg": 10.0, "total_paid": 900.0, "seller_phone":
+              "08011111111", "location": "Bariga, Lagos" }
+            </div>
+          </div>
+        </div>
+
+        <div class="endpoint-card" id="my-purchases">
+          <div class="endpoint-card-header" onclick="toggle(this)">
+            <span class="method-pill pill-get">GET</span>
+            <div class="endpoint-info">
+              <div class="endpoint-title">My Purchases</div>
+              <div class="endpoint-path">/api/marketplace/purchases/</div>
+              <div class="endpoint-plain">
+                Returns all purchases made by the logged-in user.
+              </div>
+            </div>
+            <span class="auth-tag">🔒 Token Required</span
+            ><span class="chevron">›</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="auth-note">
+              🔒 Header: <strong>Authorization: Token YOUR_TOKEN_HERE</strong>
+            </div>
+            <div class="response-row">
+              <div class="code-label">Response</div>
+              <span class="status-pill">200 OK</span>
+            </div>
+            <div class="response-block">
+              [ { "id": 1, "buyer_name": "buyer_user", "seller_name":
+              "amina_yusuf", "listing_material": "plastic", "quantity_kg": 10.0,
+              "total_paid": 900.0, "status": "pending", "created_at":
+              "2026-05-13T10:00:00Z" } ]
+            </div>
+          </div>
+        </div>
+
+        <div class="endpoint-card" id="pricing-guide">
+          <div class="endpoint-card-header" onclick="toggle(this)">
+            <span class="method-pill pill-get">GET</span>
+            <div class="endpoint-info">
+              <div class="endpoint-title">Pricing Reference Guide</div>
+              <div class="endpoint-path">/api/marketplace/pricing/</div>
+              <div class="endpoint-plain">
+                Returns current market price ranges for all 5 materials. Based
+                on Lagos 2026 rates from V-Martins and Kaltani.
+              </div>
+            </div>
+            <span class="no-auth-tag">Public</span
+            ><span class="chevron">›</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="response-row">
+              <div class="code-label">Response</div>
+              <span class="status-pill">200 OK</span>
+            </div>
+            <div class="response-block">
+              [ { "material_type": "plastic", "min_price_per_kg": 80,
+              "max_price_per_kg": 100, "suggested_price_per_kg": 90, "source":
+              "Kaltani/Lagos Market 2026" }, { "material_type": "paper",
+              "min_price_per_kg": 30, "max_price_per_kg": 50,
+              "suggested_price_per_kg": 40, "source": "Lagos Market 2026" }, {
+              "material_type": "glass", "min_price_per_kg": 20,
+              "max_price_per_kg": 40, "suggested_price_per_kg": 30, "source":
+              "Lagos Market 2026" }, { "material_type": "metal",
+              "min_price_per_kg": 500, "max_price_per_kg": 600,
+              "suggested_price_per_kg": 550, "source": "V-Martins Lagos 2026" },
+              { "material_type": "organic", "min_price_per_kg": 10,
+              "max_price_per_kg": 20, "suggested_price_per_kg": 15, "source":
+              "Lagos Market 2026" } ]
+            </div>
+          </div>
+        </div>
+
+        <div class="endpoint-card" id="ussd">
+          <div class="endpoint-card-header" onclick="toggle(this)">
+            <span class="method-pill pill-post">POST</span>
+            <div class="endpoint-info">
+              <div class="endpoint-title">USSD Handler</div>
+              <div class="endpoint-path">/api/marketplace/ussd/</div>
+              <div class="endpoint-plain">
+                Handles USSD requests from Africa's Talking. Users can view
+                listings, create listings, check pricing and view account — all
+                without internet via *384#.
+              </div>
+            </div>
+            <span class="no-auth-tag">Public</span
+            ><span class="chevron">›</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="code-label">USSD Menu Flow</div>
+            <div class="code-block">
+              *384# → Welcome to Ecosort 🌿 1. View Listings 2. Create Listing
+              3. My Listings 4. Pricing Guide 5. My Account
+            </div>
+            <div class="code-label">Africa's Talking POST Parameters</div>
+            <div class="code-block">
+              { "sessionId": "ATsession123", "phoneNumber": "+2348011111111",
+              "text": "1*2" }
+            </div>
+            <div class="response-row">
+              <div class="code-label">Response</div>
+              <span class="status-pill">200 OK</span>
+            </div>
+            <div class="response-block">
+              CON Available plastic listings: - plastic 10kg @ ₦90/kg | Bariga,
+              Lagos - plastic 5kg @ ₦85/kg | Surulere, Lagos
+            </div>
+          </div>
+        </div>
+
+        <!-- AFRICA'S TALKING SMS -->
+        <div class="section-title">📱 SMS — Africa's Talking</div>
+        <p class="section-subtitle">
+          SMS integration powered by Africa's Talking. Used for OTP delivery,
+          pickup confirmations and marketplace notifications. Architecture:
+          Django Backend → Africa's Talking SDK → Telecom Network → User
+          receives SMS.
+        </p>
+
+        <div class="endpoint-card" id="test-sms">
+          <div class="endpoint-card-header" onclick="toggle(this)">
+            <span class="method-pill pill-post">POST</span>
+            <div class="endpoint-info">
+              <div class="endpoint-title">Send SMS</div>
+              <div class="endpoint-path">/test-sms/</div>
+              <div class="endpoint-plain">
+                Sends an SMS to a phone number via Africa's Talking. Used for
+                OTP delivery and notifications. Powered by AT_USERNAME and
+                AT_API_KEY environment variables.
+              </div>
+            </div>
+            <span class="no-auth-tag">Public</span
+            ><span class="chevron">›</span>
+          </div>
+          <div class="endpoint-body">
+            <div class="at-note">
+              📱 Powered by Africa's Talking SDK · Sandbox mode for testing ·
+              Production mode for live SMS delivery
+            </div>
+            <div class="code-label">Environment Variables Required</div>
+            <div class="code-block">
+              AT_USERNAME = sandbox AT_API_KEY = your_api_key_here
+            </div>
+            <div class="code-label">Request Body (JSON)</div>
+            <div class="code-block">
+              { "phone_number": "+2348011111111", "message": "Your Ecosort OTP
+              is: 4521. Expires in 10 minutes." }
+            </div>
+            <div class="response-row">
+              <div class="code-label">Response</div>
+              <span class="status-pill">200 OK</span>
+            </div>
+            <div class="response-block">
+              { "message": "SMS sent successfully!", "recipients": [ { "number":
+              "+2348011111111", "status": "Success", "cost": "NGN 4" } ] }
+            </div>
+            <div class="code-label">Architecture Flow</div>
+            <div class="code-block">
+              Django Backend ↓ Africa's Talking SDK ↓ Telecom Network ↓ User
+              receives SMS
             </div>
           </div>
         </div>
