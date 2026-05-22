@@ -1,16 +1,18 @@
 import os
-from pathlib import Path 
+import dj_database_url
+from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+
 AT_USERNAME = os.getenv('AT_USERNAME')
 AT_API_KEY = os.getenv('AT_API_KEY')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-ecosort-secret-key-change-in-production'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-ecosort-secret-key-change-in-production')
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -24,11 +26,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
+    'corsheaders',
     'users',
     'education',
     'pickup',
     'marketplace',
-    'corsheaders',
     'myapp',
 ]
 
@@ -64,11 +66,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+# DATABASE — uses Neon/Render PostgreSQL in production
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3'),
+        conn_max_age=600,
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -85,6 +88,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -109,15 +117,29 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Ecosort API',
     'DESCRIPTION': 'Backend API for Ecosort Nigeria community-powered waste sorting platform',
-    'VERSION': '2.0.0',
+    'VERSION': '3.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    'CORS_ALLOW_ALL_ORIGINS': True,
 }
 
+# CORS — allows frontend to connect
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
     'authorization',
     'content-type',
-    'accept',
+    'dnt',
     'origin',
+    'user-agent',
+    'x-csrftoken',
     'x-requested-with',
+]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
