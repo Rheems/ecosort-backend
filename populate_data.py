@@ -5,6 +5,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 django.setup()
 
 from education.models import Category, QuizQuestion
+from marketplace.models import PricingReference
 
 # ── PLASTIC ──
 plastic, created = Category.objects.get_or_create(
@@ -125,28 +126,27 @@ if created:
 else:
     print("⏭️ E-waste already exists, skipping")
 
-    # ── PRICING REFERENCE ──
-from marketplace.models import PricingReference
 
-PricingReference.objects.get_or_create(
+# ── PRICING REFERENCE (Updated Lagos Market 2026) ──
+PricingReference.objects.update_or_create(
     material_type='plastic',
     defaults={
-        'min_price_per_kg': 80,
-        'max_price_per_kg': 100,
-        'suggested_price_per_kg': 90,
-        'source': 'Kaltani/Lagos Market 2026'
+        'min_price_per_kg': 240,
+        'max_price_per_kg': 350,
+        'suggested_price_per_kg': 300,
+        'source': 'Lagos Market Clusters 2026 — Mushin, Ojota, Alaba'
     }
 )
-PricingReference.objects.get_or_create(
+PricingReference.objects.update_or_create(
     material_type='paper',
     defaults={
-        'min_price_per_kg': 30,
-        'max_price_per_kg': 50,
-        'suggested_price_per_kg': 40,
-        'source': 'Lagos Market 2026'
+        'min_price_per_kg': 60,
+        'max_price_per_kg': 100,
+        'suggested_price_per_kg': 80,
+        'source': 'Lagos Market Clusters 2026 — Mushin, Ojota, Alaba'
     }
 )
-PricingReference.objects.get_or_create(
+PricingReference.objects.update_or_create(
     material_type='glass',
     defaults={
         'min_price_per_kg': 20,
@@ -155,16 +155,16 @@ PricingReference.objects.get_or_create(
         'source': 'Lagos Market 2026'
     }
 )
-PricingReference.objects.get_or_create(
+PricingReference.objects.update_or_create(
     material_type='metal',
     defaults={
-        'min_price_per_kg': 500,
-        'max_price_per_kg': 600,
-        'suggested_price_per_kg': 550,
-        'source': 'V-Martins Lagos 2026'
+        'min_price_per_kg': 180,
+        'max_price_per_kg': 850,
+        'suggested_price_per_kg': 450,
+        'source': 'Lagos Market Clusters 2026 — Mushin, Ojota, Alaba'
     }
 )
-PricingReference.objects.get_or_create(
+PricingReference.objects.update_or_create(
     material_type='organic',
     defaults={
         'min_price_per_kg': 10,
@@ -173,9 +173,15 @@ PricingReference.objects.get_or_create(
         'source': 'Lagos Market 2026'
     }
 )
-print("✅ Pricing reference data added!")
-
-print("\n🌿 Database population complete!")
-
+PricingReference.objects.update_or_create(
+    material_type='ewaste',
+    defaults={
+        'min_price_per_kg': 200,
+        'max_price_per_kg': 1500,
+        'suggested_price_per_kg': 700,
+        'source': 'Lagos Market Clusters 2026 — Mushin, Ojota, Alaba'
+    }
+)
+print("✅ Pricing reference data updated!")
 
 print("\n🌿 Database population complete!")
