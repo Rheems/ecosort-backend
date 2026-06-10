@@ -1,4 +1,3 @@
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -6,7 +5,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-import json
 
 from .models import MaterialListing, MarketplaceTransaction, PricingReference, USSDSession
 from .serializers import (
@@ -21,7 +19,6 @@ from .serializers import (
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_listings(request):
-    # Auto-expire old listings
     MaterialListing.objects.filter(
         expires_at__lt=timezone.now(),
         status='active'
@@ -42,6 +39,13 @@ def get_listings(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_listing(request):
+    # ── ROLE CHECK ──
+    if request.user.user_type not in ['household', 'collector']:
+        return Response(
+            {'error': 'Only households and collectors can create listings'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
     serializer = CreateListingSerializer(data=request.data)
     if serializer.is_valid():
         listing = serializer.save(
@@ -87,10 +91,17 @@ def get_listing(request, listing_id):
         )
 
 
-# ── BUY / EXPRESS INTEREST ──
+# ── BUY LISTING ──
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def buy_listing(request, listing_id):
+    # ── ROLE CHECK ──
+    if request.user.user_type not in ['buyer', 'brand']:
+        return Response(
+            {'error': 'Only buyers and brands can purchase listings'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
     try:
         listing = MaterialListing.objects.get(id=listing_id, status='active')
     except MaterialListing.DoesNotExist:
@@ -113,7 +124,6 @@ def buy_listing(request, listing_id):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Create transaction
     transaction = MarketplaceTransaction.objects.create(
         listing=listing,
         buyer=request.user,
@@ -122,7 +132,6 @@ def buy_listing(request, listing_id):
         status='pending'
     )
 
-    # Mark listing as sold
     listing.status = 'sold'
     listing.save()
 
@@ -185,7 +194,6 @@ def ussd_handler(request):
         phone_number = request.POST.get('phoneNumber', '')
         text = request.POST.get('text', '')
 
-        # Get or create session
         session, created = USSDSession.objects.get_or_create(
             session_id=session_id,
             defaults={
@@ -195,7 +203,6 @@ def ussd_handler(request):
             }
         )
 
-        # Parse user input
         parts = text.split('*') if text else []
         level = len(parts)
 
@@ -206,7 +213,6 @@ def ussd_handler(request):
 
 
 def process_ussd_menu(session, text, parts, level, phone_number):
-    # MAIN MENU
     if text == '':
         return """CON Welcome to Ecosort 🌿
 1. View Listings
@@ -215,7 +221,6 @@ def process_ussd_menu(session, text, parts, level, phone_number):
 4. Pricing Guide
 5. My Account"""
 
-    # LEVEL 1
     if level == 1:
         choice = parts[0]
 
@@ -283,7 +288,6 @@ Organic: ₦10-20"""
             except:
                 return "END Account not found. Please register on the app."
 
-    # LEVEL 2 — VIEW LISTINGS by material
     if level == 2 and parts[0] == '1':
         material_map = {
             '1': 'plastic', '2': 'paper',
@@ -310,7 +314,6 @@ Organic: ₦10-20"""
             response += f"- {l.material_type} {l.quantity_kg}kg @ ₦{l.price_per_kg}/kg | {l.location}\n"
         return response
 
-    # LEVEL 2 — CREATE LISTING: select quantity
     if level == 2 and parts[0] == '2':
         material_map = {
             '1': 'plastic', '2': 'paper',
@@ -325,7 +328,6 @@ Organic: ₦10-20"""
         session.save()
         return f"CON Enter quantity in kg for {material}:"
 
-    # LEVEL 3 — CREATE LISTING: enter price
     if level == 3 and parts[0] == '2':
         try:
             quantity = float(parts[2])
@@ -335,14 +337,12 @@ Organic: ₦10-20"""
         except:
             return "END Invalid quantity. Please enter a number."
 
-    # LEVEL 4 — CREATE LISTING: confirm
     if level == 4 and parts[0] == '2':
         try:
             price = float(parts[3])
             material = session.session_data.get('material', '')
             quantity = session.session_data.get('quantity', 0)
             total = quantity * price
-
             session.session_data['price'] = price
             session.save()
 
@@ -356,7 +356,6 @@ Total: ₦{total}
         except:
             return "END Invalid price. Please enter a number."
 
-    # LEVEL 5 — CREATE LISTING: save
     if level == 5 and parts[0] == '2':
         choice = parts[4]
         if choice == '1':
@@ -381,7 +380,7 @@ Total: ₦{total}
 
                 return f"END Listing created!\n{material} {quantity}kg @ ₦{price}/kg\nListing ID: {listing.id}\nExpires in 48 hours."
             except Exception as e:
-                return f"END Error creating listing. Please try again."
+                return "END Error creating listing. Please try again."
         else:
             return "END Listing cancelled."
 
