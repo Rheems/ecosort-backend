@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, QuizQuestion, QuizResult
+from .models import Category, QuizQuestion, QuizResult, UserEducationProgress
 
 class QuizQuestionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,3 +24,9 @@ class QuizResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuizResult
         fields = ['id', 'category_name', 'score', 'total_questions', 'badge_awarded', 'completed_at']
+
+class UserEducationProgressSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = UserEducationProgress
+        fields = '_all_'
