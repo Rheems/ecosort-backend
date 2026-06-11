@@ -154,3 +154,17 @@ class EducationEvent(models.Model):
 
     def __str__(self):
         return f"{self.event_type} - {self.user} - {self.module_id}"
+
+class EwasteDropoffLocation(models.Model):
+    location_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    lga = models.CharField(max_length=100)
+    state = models.CharField(max_length=50, default='Lagos')
+    contact_name = models.CharField(max_length=100)
+    contact_phone = models.CharField(max_length=20)
+    address = models.TextField()
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.lga}"

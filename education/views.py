@@ -4,11 +4,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.utils import timezone
 from django.db.models import Sum
-from .models import Category, QuizQuestion, QuizResult, UserEducationProgress, EducationEvent
-from .serializers import CategorySerializer, QuizSubmitSerializer, QuizResultSerializer
+from .models import Category, QuizQuestion, QuizResult, UserEducationProgress, EducationEvent, EwasteDropoffLocation
+from .serializers import CategorySerializer, QuizSubmitSerializer, QuizResultSerializer, EwasteDropoffSerializer
 
-
-# ── COLLECTOR SAFETY TRACK CATEGORIES ──
 COLLECTOR_MODULES = ['metal', 'organic', 'ewaste']
 HOUSEHOLD_MODULES = ['plastic', 'glass', 'metal', 'paper', 'organic', 'ewaste']
 
@@ -35,7 +33,6 @@ def get_or_create_progress(user):
     return progress
 
 
-# ── GET ALL GUIDES (filtered by user type) ──
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_all_guides(request):
@@ -44,12 +41,10 @@ def get_all_guides(request):
         categories = Category.objects.filter(name__in=modules)
     else:
         categories = Category.objects.all()
-
     serializer = CategorySerializer(categories, many=True)
     return Response(serializer.data)
 
 
-# ── GET SINGLE CATEGORY GUIDE ──
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_category_guide(request, category_name):
@@ -58,15 +53,10 @@ def get_category_guide(request, category_name):
     except Category.DoesNotExist:
         return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    # Log guide view event
     if request.user.is_authenticated:
         log_event(request.user, 'GUIDE_VIEWED', category_name)
-
-        # Update progress
         progress = get_or_create_progress(request.user)
         setattr(progress, f'{category_name}_guide_read', True)
-
-        # Update streak
         today = timezone.now().date()
         if progress.last_activity_date != today:
             if progress.last_activity_date and (today - progress.last_activity_date).days == 1:
@@ -76,18 +66,14 @@ def get_category_guide(request, category_name):
             else:
                 progress.daily_streak = 1
             progress.last_activity_date = today
-
-        # Special field for organic
         if category_name == 'organic':
             progress.separation_method_informed = True
-
         progress.save()
 
     serializer = CategorySerializer(category)
     return Response(serializer.data)
 
 
-# ── SUBMIT QUIZ ──
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def submit_quiz(request):
@@ -103,10 +89,9 @@ def submit_quiz(request):
     except Category.DoesNotExist:
         return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    # Check if collector is allowed this module
     if request.user.user_type == 'collector' and category.name not in COLLECTOR_MODULES:
         return Response(
-            {'error': f'Collectors only access Metal, Organic and E-waste modules'},
+            {'error': 'Collectors only access Metal, Organic and E-waste modules'},
             status=status.HTTP_403_FORBIDDEN
         )
 
@@ -118,10 +103,7 @@ def submit_quiz(request):
     for question in questions:
         user_answer = answers.get(str(question.id), '').upper()
         is_correct = user_answer == question.correct_answer
-
-        # Log each quiz answer event
         log_event(request.user, 'QUIZ_ANSWERED', category.name)
-
         if is_correct:
             score += 1
         else:
@@ -135,7 +117,6 @@ def submit_quiz(request):
 
     percentage = (score / total * 100) if total > 0 else 0
 
-    # Determine badge based on user type
     badge = 'none'
     if percentage == 100:
         if request.user.user_type == 'collector':
@@ -143,8 +124,7 @@ def submit_quiz(request):
         else:
             badge = f'{category.name}_complete'
 
-    # Save quiz result
-    result = QuizResult.objects.create(
+    QuizResult.objects.create(
         user=request.user,
         category=category,
         score=score,
@@ -152,19 +132,15 @@ def submit_quiz(request):
         badge_awarded=badge
     )
 
-    # Update progress
     progress = get_or_create_progress(request.user)
 
     if percentage == 100:
         setattr(progress, f'{category.name}_quiz_passed', True)
         setattr(progress, f'{category.name}_badge_earned', True)
-
-        # Log badge event
         log_event(request.user, 'BADGE_AWARDED', category.name, guide_completed=True)
 
     progress.save()
 
-    # ── CHECK FULL SORTER BADGE (Household) ──
     full_sorter_unlocked = False
     if request.user.user_type != 'collector':
         household_badges = all([
@@ -188,7 +164,6 @@ def submit_quiz(request):
             log_event(request.user, 'BADGE_AWARDED', 'FULL_SORTER', guide_completed=True)
             full_sorter_unlocked = True
 
-    # ── CHECK FULL COLLECTOR BADGE (Collector) ──
     full_collector_unlocked = False
     if request.user.user_type == 'collector':
         collector_badges = all([
@@ -220,7 +195,6 @@ def submit_quiz(request):
     }, status=status.HTTP_200_OK)
 
 
-# ── GET MY QUIZ RESULTS ──
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_my_results(request):
@@ -229,7 +203,6 @@ def get_my_results(request):
     return Response(serializer.data)
 
 
-# ── GET EDUCATION PROGRESS ──
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_education_progress(request):
@@ -273,7 +246,6 @@ def get_education_progress(request):
     if full_badge_earned:
         badges_earned.append(full_badge)
 
-    # Get verified kg from pickups
     from pickup.models import PickupRequest
     verified_kg = PickupRequest.objects.filter(
         user=user, status='completed'
@@ -292,3 +264,52 @@ def get_education_progress(request):
         'verified_kg': verified_kg,
         'separation_method_informed': progress.separation_method_informed,
     })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def ewaste_disposal(request):
+    log_event(request.user, 'EWASTE_DISPOSAL_QUERY', 'E_WASTE')
+
+    try:
+        from users.models import UserProfile
+        profile = UserProfile.objects.get(user=request.user)
+        user_lga = profile.location
+    except:
+        user_lga = None
+
+    if user_lga:
+        locations = EwasteDropoffLocation.objects.filter(
+            active=True,
+            lga__icontains=user_lga
+        )
+    else:
+        locations = EwasteDropoffLocation.objects.filter(active=True)
+
+    if not locations.exists():
+        return Response({
+            'message': 'No drop-off location found near you.',
+            'fallback': 'Contact our agent for assistance.',
+            'agent_phone': '08000000000',
+            'note': 'Store your e-waste safely. NEVER burn e-waste.'
+        })
+
+    serializer = EwasteDropoffSerializer(locations, many=True)
+    return Response({
+        'message': 'E-waste drop-off locations near you',
+        'locations': serializer.data,
+        'reminder': 'NEVER burn e-waste — it releases toxic chemicals harmful to your health.'
+    })
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_dropoff_locations(request):
+    lga = request.query_params.get('lga', None)
+    locations = EwasteDropoffLocation.objects.filter(active=True)
+
+    if lga:
+        locations = locations.filter(lga__icontains=lga)
+
+    serializer = EwasteDropoffSerializer(locations, many=True)
+    return Response(serializer.data)

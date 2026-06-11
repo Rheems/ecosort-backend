@@ -197,3 +197,40 @@ PricingReference.objects.update_or_create(
 print("✅ Pricing reference data updated!")
 
 print("\n🌿 Database population complete!")
+# ── EWASTE DROP-OFF LOCATIONS ──
+from education.models import EwasteDropoffLocation
+
+EwasteDropoffLocation.objects.get_or_create(
+    name='Alaba International Market E-waste Point',
+    defaults={
+        'lga': 'Ojo',
+        'state': 'Lagos',
+        'contact_name': 'Alaba E-waste Agent',
+        'contact_phone': '08012345678',
+        'address': 'Alaba International Market, Ojo, Lagos',
+        'active': True
+    }
+)
+EwasteDropoffLocation.objects.get_or_create(
+    name='Mushin Recycling Centre',
+    defaults={
+        'lga': 'Mushin',
+        'state': 'Lagos',
+        'contact_name': 'Mushin Agent',
+        'contact_phone': '08023456789',
+        'address': 'Mushin Market Area, Lagos',
+        'active': True
+    }
+)
+EwasteDropoffLocation.objects.get_or_create(
+    name='Ojota Collection Point',
+    defaults={
+        'lga': 'Kosofe',
+        'state': 'Lagos',
+        'contact_name': 'Ojota Agent',
+        'contact_phone': '08034567890',
+        'address': 'Ojota Market, Kosofe, Lagos',
+        'active': True
+    }
+)
+print("✅ E-waste drop-off locations added!")

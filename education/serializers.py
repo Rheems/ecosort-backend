@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, QuizQuestion, QuizResult, UserEducationProgress
+from .models import Category, QuizQuestion, QuizResult, UserEducationProgress, EwasteDropoffLocation
 
 class QuizQuestionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,3 +30,9 @@ class UserEducationProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserEducationProgress
         fields = '_all_'
+
+class EwasteDropoffSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = EwasteDropoffLocation
+        fields = ['location_id', 'name', 'lga', 'state', 'contact_name', 'contact_phone', 'address']
