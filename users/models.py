@@ -1,6 +1,7 @@
-from django.conf import settings
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = [
@@ -9,74 +10,78 @@ class User(AbstractUser):
         ('buyer', 'Buyer'),
         ('brand', 'Brand'),
     ]
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES)
+    phone_number = models.CharField(max_length=20, unique=True)
+    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='household')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    USERNAME_FIELD = 'phone_number'
+    REQUIRED_FIELDS = ['username', 'email']
+
+    def __str__(self):
+        return f"{self.phone_number} ({self.user_type})"
 
 
 class UserProfile(models.Model):
-    LANGUAGE_CHOICES = [
-        ('english', 'English'),
-        ('pidgin', 'Pidgin'),
-    ]
-    CHANNEL_CHOICES = [
-        ('whatsapp', 'WhatsApp'),
-        ('ussd', 'USSD'),
-        ('app', 'App'),
-    ]
-    WASTE_TYPE_CHOICES = [
-        ('plastic', 'Plastic'),
-        ('paper', 'Paper'),
-        ('glass', 'Glass'),
-        ('metal', 'Metal'),
-        ('organic', 'Organic'),
-        ('mixed', 'Mixed'),
-    ]
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=100, blank=True)
+    location = models.CharField(max_length=100, blank=True)
+    language_preference = models.CharField(max_length=20, default='english')
+    channel = models.CharField(max_length=20, default='app')
+    waste_type = models.CharField(max_length=20, blank=True)
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=100)
-    location = models.CharField(max_length=100, blank=True, null=True)
-    language_preference = models.CharField(max_length=10, choices=LANGUAGE_CHOICES, default='english')
-    channel = models.CharField(max_length=10, choices=CHANNEL_CHOICES, default='app')
-    waste_type = models.CharField(max_length=20, choices=WASTE_TYPE_CHOICES, blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return f"{self.user} profile"
 
+
+class OTPVerification(models.Model):
+    phone_number = models.CharField(max_length=20)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.phone_number} - {self.otp}"
 
 
 class OnboardingSession(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    
-    # 5 individual steps
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     step_1_completed = models.BooleanField(default=False)
     step_2_completed = models.BooleanField(default=False)
     step_3_completed = models.BooleanField(default=False)
     step_4_completed = models.BooleanField(default=False)
     step_5_completed = models.BooleanField(default=False)
-
-    current_step = models.IntegerField(default=1)
     is_completed = models.BooleanField(default=False)
     started_at = models.DateTimeField(auto_now_add=True)
-    completed_at = models.DateTimeField(blank=True, null=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user} onboarding"
+
 
 class RewardNotificationQueue(models.Model):
-    STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('sent', 'Sent'),
-        ('failed', 'Failed'),
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    message = models.TextField()
+    is_sent = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.message[:50]}"
+
+
+class UserPromptSettings(models.Model):
+    FREQUENCY_CHOICES = [
+        ('3x_week', '3x per week'),
+        ('1x_week', '1x per week'),
+        ('stopped', 'Stopped'),
     ]
-class OTPVerification(models.Model):
-        user = models.ForeignKey (settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-        otp = models.CharField(max_length=4)
-        created_at = models.DateTimeField(auto_now_add=True)
-        is_used = models.BooleanField(default=False)
 
-def is_valid(self):
-        from django.utils import timezone
-        import datetime
-        # OTP expires after 10 minutes
-        expiry_time = self.created_at + datetime.timedelta(minutes=10)
-        return timezone.now() < expiry_time and not self.is_used
-        notification_type = models.CharField(max_length=50, default='first_reward')
-        status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-        queued_at = models.DateTimeField(auto_now_add=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, default='3x_week')
+    is_active = models.BooleanField(default=True)
+    registered_at = models.DateTimeField(auto_now_add=True)
+    snoozed_until = models.DateTimeField(null=True, blank=True)
+    last_prompt_sent = models.DateTimeField(null=True, blank=True)
+    last_category_sent = models.CharField(max_length=20, blank=True)
 
+    def __str__(self):
+        return f"{self.user} - {self.frequency}"

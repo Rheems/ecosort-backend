@@ -245,3 +245,36 @@ def onboarding_status(request):
             {'message': 'No onboarding session found'},
             status=status.HTTP_404_NOT_FOUND
         )
+
+        # SNOOZE OR STOP PROMPTS
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def manage_prompts(request):
+    from users.models import UserPromptSettings
+    from datetime import timedelta
+
+    action = request.data.get('action')
+    settings_obj, _ = UserPromptSettings.objects.get_or_create(user=request.user)
+
+    if action == 'stop':
+        settings_obj.is_active = False
+        settings_obj.frequency = 'stopped'
+        settings_obj.save()
+        return Response({'message': 'Prompts stopped successfully!'})
+
+    elif action == 'snooze':
+        settings_obj.snoozed_until = timezone.now() + timedelta(days=7)
+        settings_obj.save()
+        return Response({'message': 'Prompts snoozed for 7 days!'})
+
+    elif action == 'resume':
+        settings_obj.is_active = True
+        settings_obj.snoozed_until = None
+        settings_obj.frequency = '3x_week'
+        settings_obj.save()
+        return Response({'message': 'Prompts resumed!'})
+
+    return Response(
+        {'error': 'Invalid action. Use stop, snooze or resume'},
+        status=status.HTTP_400_BAD_REQUEST
+    )

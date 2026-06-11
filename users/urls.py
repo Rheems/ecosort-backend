@@ -9,5 +9,5 @@ urlpatterns = [
     path('profile/me/', views.profile, name='profile'),
     path('onboarding/complete/', views.complete_onboarding, name='complete_onboarding'),
     path('onboarding/status/', views.onboarding_status, name='onboarding_status'),path('profile/points/', views.get_points, name='points'),
-
+    path('prompts/manage/', views.manage_prompts, name='manage_prompts'),
 ]
