@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'pickup',
     'marketplace',
     'myapp',
+    'payments',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +144,5 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+#paystack
+PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY')
