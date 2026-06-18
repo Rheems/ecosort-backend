@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from .models import User, UserProfile, OnboardingSession
 
+
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    full_name = serializers.CharField(write_only=True)
-    location = serializers.CharField(write_only=True, required=False)
-    language = serializers.CharField(write_only=True, required=False)
-    waste_type = serializers.CharField(write_only=True, required=False)
+    password   = serializers.CharField(write_only=True)
+    full_name  = serializers.CharField(write_only=True)
+    location   = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    language   = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    waste_type = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    email      = serializers.CharField(required=False, allow_blank=True, default='')
 
     class Meta:
         model = User
@@ -22,25 +24,35 @@ class RegisterSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        full_name = validated_data.pop('full_name')
-        location = validated_data.pop('location', None)
-        language = validated_data.pop('language', 'english')
+        full_name  = validated_data.pop('full_name')
+        location   = validated_data.pop('location', None)
+        language   = validated_data.pop('language', 'english')
         waste_type = validated_data.pop('waste_type', None)
+        email      = validated_data.pop('email', '')
+
+        phone = validated_data.get('phone_number', '')
+
+        # Generate email from phone automatically — no need to send from frontend
+        if not email or email == '':
+            email = 'user' + phone + '@ecosort.ng'
+
+        # Make username unique using phone number
+        username = phone
 
         user = User.objects.create_user(
-            username=validated_data.get('email'),
-            email=validated_data['email'],
+            username=username,
+            email=email,
             password=validated_data['password'],
-            phone_number=validated_data.get('phone_number'),
+            phone_number=phone,
             user_type=validated_data['user_type'],
         )
 
         UserProfile.objects.create(
             user=user,
             full_name=full_name,
-            location=location,
+            location=location or '',
             language_preference=language,
-            waste_type=waste_type,
+            waste_type=waste_type or '',
         )
 
         return user
