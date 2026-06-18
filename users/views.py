@@ -19,7 +19,7 @@ def register(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        OnboardingSession.objects.create(user=user, current_step=1)
+        OnboardingSession.objects.create(user=user)
         return Response({
             'message': 'Registration successful!',
             'user_id': user.id,

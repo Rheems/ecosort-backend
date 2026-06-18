@@ -46,6 +46,7 @@ class OTPVerification(models.Model):
 
 class OnboardingSession(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    current_step = models.IntegerField(default=1)
     step_1_completed = models.BooleanField(default=False)
     step_2_completed = models.BooleanField(default=False)
     step_3_completed = models.BooleanField(default=False)
