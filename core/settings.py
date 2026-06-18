@@ -68,13 +68,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 # DATABASE — uses Neon/Render PostgreSQL in production
-import dj_database_url
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        'CONN_MAX_AGE': 0, 
-         ssl_require=True,
+    'default': dj_database_url.parse(
+        os.environ.get('DATABASE_URL'),
+        conn_max_age=0,
+        ssl_require=True,
     )
 }
 
@@ -147,5 +145,6 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
-#paystack
+
+# Paystack
 PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY')
