@@ -73,8 +73,14 @@ def request_otp(request):
             status=status.HTTP_404_NOT_FOUND
         )
 
-    otp = str(random.randint(1000, 9999))
-    OTPVerification.objects.create(user=user, otp=otp)
+    # Generate 6-digit OTP
+    otp = str(random.randint(100000, 999999))
+
+    # Save OTP — store phone_number directly (matches OTPVerification model)
+    OTPVerification.objects.create(
+        phone_number=phone_number,
+        otp=otp
+    )
 
     return Response({
         'message': 'OTP generated successfully!',
@@ -98,21 +104,16 @@ def verify_otp(request):
             status=status.HTTP_404_NOT_FOUND
         )
 
+    # Look up OTP by phone_number (matches how we store it)
     try:
         otp_record = OTPVerification.objects.filter(
-            user=user,
+            phone_number=phone_number,
             is_used=False
         ).latest('created_at')
     except OTPVerification.DoesNotExist:
         return Response(
             {'error': 'No OTP found. Please request a new one'},
             status=status.HTTP_404_NOT_FOUND
-        )
-
-    if not otp_record.is_valid():
-        return Response(
-            {'error': 'OTP has expired. Please request a new one'},
-            status=status.HTTP_400_BAD_REQUEST
         )
 
     if otp_record.otp != otp:
@@ -209,10 +210,10 @@ def complete_onboarding(request):
         session.completed_at = timezone.now()
         session.current_step = 5
 
+        # Fix: message field is required in RewardNotificationQueue
         RewardNotificationQueue.objects.create(
             user=request.user,
-            notification_type='first_reward',
-            status='pending',
+            message='Welcome! Your first reward is ready. Start recycling to earn points!',
         )
 
         session.save()
@@ -246,7 +247,8 @@ def onboarding_status(request):
             status=status.HTTP_404_NOT_FOUND
         )
 
-        # SNOOZE OR STOP PROMPTS
+
+# SNOOZE OR STOP PROMPTS
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def manage_prompts(request):
