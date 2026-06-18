@@ -70,8 +70,9 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # DATABASE — uses Neon/Render PostgreSQL in production
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3'),
-        conn_max_age=600,
+        default=os.environ.get('DATABASE_URL'),
+        'CONN_MAX_AGE': 0, 
+         ssl_require=True,
     )
 }
 
