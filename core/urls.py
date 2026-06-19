@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+from users import views as users_views
 
 
 def health_check(request):
@@ -56,6 +57,9 @@ def homepage(request):
                 "pricing_guide": "GET /api/marketplace/pricing/",
                 "ussd": "POST /api/marketplace/ussd/",
             },
+            "whatsapp": {
+                "webhook": "POST /webhook/whatsapp/",
+            },
         }
     })
 
@@ -74,4 +78,5 @@ urlpatterns = [
     path('', include('myapp.urls')),
     path('api/payments/', include('payments.urls')),
     path('webhooks/', include('payments.urls')),
+    path('webhook/whatsapp/', users_views.whatsapp_webhook, name='whatsapp-webhook'),  # ✅ NEW
 ]

@@ -280,3 +280,47 @@ def manage_prompts(request):
         {'error': 'Invalid action. Use stop, snooze or resume'},
         status=status.HTTP_400_BAD_REQUEST
     )
+
+# ADD THIS FUNCTION AT THE BOTTOM OF users/views.py
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def whatsapp_webhook(request):
+    phone   = request.data.get('From', '')
+    message = request.data.get('Body', '').strip().lower()
+
+    if 'hello' in message or 'hi' in message or message == '':
+        reply = "Hello! Welcome to Ecosort Nigeria! 🌿\n\nReply with:\n1 - Request a pickup\n2 - Waste rates\n3 - Recycling tips\n4 - About Ecosort"
+
+    elif '1' in message or 'request' in message or 'pickup' in message:
+        reply = "To request a pickup:\n✅ Open the Ecosort app\n✅ Tap Request Pickup\n✅ Select waste type\n✅ Get your 6-digit code\n✅ Show code to collector!\n\nDownload: ecosorttech.netlify.app"
+
+    elif '2' in message or 'rate' in message or 'price' in message:
+        reply = "Current Ecosort rates:\n♻️ PET Plastic - ₦80/kg\n🔩 Aluminum - ₦360/kg\n📦 Carton - ₦40/kg\n📄 Paper - ₦20/kg\n🪟 Glass - ₦30/kg\n\nEarn points for every pickup!"
+
+    elif '3' in message or 'learn' in message or 'recycle' in message or 'tip' in message:
+        reply = "♻️ Recycling Tips:\n✅ Sort waste before pickup\n✅ Keep materials dry\n✅ Flatten cartons\n✅ Rinse plastic bottles\n✅ Separate metals from plastic\n\nEarn badges in the app!"
+
+    elif '4' in message or 'about' in message or 'ecosort' in message:
+        reply = "🌿 About Ecosort Nigeria\n\nEcosort connects households with waste collectors to make recycling easy and rewarding!\n\n✅ Request pickups\n✅ Earn points\n✅ Learn about recycling\n✅ Sell recyclables\n\nJoin us: ecosorttech.netlify.app"
+
+    else:
+        reply = "Welcome to Ecosort Nigeria! 🌿\n\nReply with:\n1 - Request a pickup\n2 - Waste rates\n3 - Recycling tips\n4 - About Ecosort\n\nVisit: ecosorttech.netlify.app"
+
+    # Send reply via Twilio WhatsApp
+    try:
+        from twilio.rest import Client
+        account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
+        auth_token  = os.environ.get('TWILIO_AUTH_TOKEN')
+        from_number = os.environ.get('TWILIO_WHATSAPP_NUMBER', 'whatsapp:+14155238886')
+
+        client = Client(account_sid, auth_token)
+        client.messages.create(
+            body=reply,
+            from_=from_number,
+            to=phone
+        )
+    except Exception as e:
+        pass
+
+    return Response({'status': 'ok'}, status=status.HTTP_200_OK)
